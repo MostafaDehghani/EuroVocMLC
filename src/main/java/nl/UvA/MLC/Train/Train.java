@@ -16,17 +16,18 @@ import nl.UvA.Utilities.Runner;
 public class Train {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Train.class.getName());
     public static void main(String[] args) {
-        try {
-                        String Command_chmod = "chmod +x " + FileManager.svmRankDir.getPath() +"/svm_rank_learn";
-            String Command_svmRank = FileManager.svmRankDir.getPath()+ "/svm_rank_learn -c 20.0 " + svmRankFilesDir.getPath()
-                    + "/train.dat " + svmRankFilesDir.getPath() + "/model.dat";
-            String Command_chmod = "";
-            String Command_svmRank = "";
-            Runner.runCommand(Command_chmod);
-            Runner.runCommand(Command_svmRank);
-        } catch (IOException ex) {
-            log.error(ex);
-        }
+//        try {
+//            
+//            String Command_chmod = "chmod +x " + FileManager.svmRankDir.getPath() +"/svm_rank_learn";
+//            String Command_svmRank = FileManager.svmRankDir.getPath()+ "/svm_rank_learn -c 20.0 " + svmRankFilesDir.getPath()
+//                    + "/train.dat " + svmRankFilesDir.getPath() + "/model.dat";
+//            String Command_chmod = "";
+//            String Command_svmRank = "";
+//            Runner.runCommand(Command_chmod);
+//            Runner.runCommand(Command_svmRank);
+//        } catch (IOException ex) {
+//            log.error(ex);
+//        }
     }
     
     
