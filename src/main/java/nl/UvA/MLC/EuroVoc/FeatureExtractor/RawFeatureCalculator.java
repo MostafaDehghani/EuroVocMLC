@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.UvA.MLC.EuroVoc.EuroVocDoc;
 import nl.UvA.MLC.EuroVoc.EuroVocParser;
 import nl.UvA.MLC.EuroVoc.IREngine.Retrieval;
@@ -89,7 +87,7 @@ public class RawFeatureCalculator extends EuroVocParser {
                 System.out.println("Not valid number");
         }
         feature_allQ_allD.put(doc, f);
-        System.out.println("doc " + doc.getId() + "is processed...");
+        System.out.println("doc " + doc.getId() + " is processed...");
     }
 
     private void calculateFeatures() {
@@ -138,7 +136,7 @@ public class RawFeatureCalculator extends EuroVocParser {
             try {
                 this.docsMap.put(i, this.ireader.document(i).get("ID"));
             } catch (IOException ex) {
-                Logger.getLogger(Retrieval.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex);
             }
         }
     }
