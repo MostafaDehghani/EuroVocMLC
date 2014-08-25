@@ -31,12 +31,12 @@ public class Test {
             BufferedWriter judgeBW = new  BufferedWriter(new FileWriter(new File(judgePath)));
             String testLine;
             while((testLine=testBR.readLine())!=null){
-                String[] lineParts1 = testLine.split("#");
+                String[] lineParts1 = testLine.split(" # ");
                 String[] lineParts2 = lineParts1[0].split("\\s+");
                 String[] lineParts3 = lineParts1[1].split("\\s+");
-                resInstance resI = new resInstance(lineParts3[2],lineParts3[1],Double.parseDouble(scoreBR.readLine()),lineParts2[0]);
+                resInstance resI = new resInstance(lineParts3[1],lineParts3[0],Double.parseDouble(scoreBR.readLine()),lineParts2[0]);
                 res.add(resI);
-                System.out.println(resI.toString());
+//                System.out.println(resI.toString());
             }
             Collections.sort(res, new resInstanceComparator());
             String qidTmp= "null";
@@ -86,7 +86,7 @@ class resInstance{
     public int compare(resInstance o1, resInstance o2) {
         int value = o1.qId.compareTo(o2.qId);
         if (value == 0) {
-                return o1.score.compareTo(o2.score);
+                return o2.score.compareTo(o1.score);
         }
         return value;
     }    

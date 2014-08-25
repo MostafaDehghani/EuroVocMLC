@@ -41,4 +41,16 @@ public class FeaturesDefinition {
         }
         return feature_oneQ_allD;
     }
+    
+    public HashMap<String,Feature> F_4_retrievalBased(EuroVocDoc doc, Retrieval retriver) {
+        HashMap<String,Feature> feature_oneQ_allD =  new HashMap<String, Feature>();
+        try {
+            feature_oneQ_allD = retriver.searchAndReturnResults(doc.getText(), doc.getId());
+        } catch (IOException ex) {
+            log.error(ex);
+        } catch (ParseException ex) {
+            log.error(ex);
+        }
+        return feature_oneQ_allD;
+    }
 }

@@ -58,7 +58,7 @@ public class RawFeatureCalculator extends EuroVocParser {
             case 1:
                 retr = this.getRetriever();
                 retr.setIreader(this.ireader);
-                retr.setField(this.field);
+                retr.setField("TEXT");
                 retr.setSimFName("LMD");
                 retr.setDocsMap(this.docsMap);
                 f = fd.F_1_2_3_retrievalBased(doc, retr);
@@ -67,7 +67,7 @@ public class RawFeatureCalculator extends EuroVocParser {
             case 2:
                 retr = this.getRetriever();
                 retr.setIreader(this.ireader);
-                retr.setField(this.field);
+                retr.setField("TEXT");
                 retr.setSimFName("LMJM");
                 retr.setDocsMap(this.docsMap);
                 f = fd.F_1_2_3_retrievalBased(doc, retr);
@@ -76,7 +76,34 @@ public class RawFeatureCalculator extends EuroVocParser {
             case 3:
                 retr = this.getRetriever();
                 retr.setIreader(this.ireader);
-                retr.setField(this.field);
+                retr.setField("TITLE");
+                retr.setSimFName("BM25");
+                retr.setDocsMap(this.docsMap);
+                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 4:
+                retr = this.getRetriever();
+                retr.setIreader(this.ireader);
+                retr.setField("TITLE");
+                retr.setSimFName("LMD");
+                retr.setDocsMap(this.docsMap);
+                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 5:
+                retr = this.getRetriever();
+                retr.setIreader(this.ireader);
+                retr.setField("TITLE");
+                retr.setSimFName("LMJM");
+                retr.setDocsMap(this.docsMap);
+                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 6:
+                retr = this.getRetriever();
+                retr.setIreader(this.ireader);
+                retr.setField("TEXT");
                 retr.setSimFName("BM25");
                 retr.setDocsMap(this.docsMap);
                 f = fd.F_1_2_3_retrievalBased(doc, retr);
@@ -100,14 +127,13 @@ public class RawFeatureCalculator extends EuroVocParser {
     }
 
     public HashMap<Integer, HashMap<EuroVocDoc, HashMap<String, Feature>>> conceptBaseFeatureCalc() {
-        this.allfeature_allQ_allD.clear();
+        this.allfeature_allQ_allD = new HashMap<>();
         try {
-            this.featureNumbers = new Integer[]{1, 2, 3};
-//            featureNumbers = new Integer[]{1, 2, 3};
+            this.featureNumbers = new Integer[]{1, 2, 3, 4, 5, 6};
             this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
             this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
             this.loadIndexDocs();
-            this.field = "TEXT";
+//            this.field = "TEXT";
             calculateFeatures();
         } catch (IOException ex) {
             log.error(ex);
@@ -116,13 +142,13 @@ public class RawFeatureCalculator extends EuroVocParser {
     }
 
     public HashMap<Integer, HashMap<EuroVocDoc, HashMap<String, Feature>>> docBaseFeatureCalc() {
-        allfeature_allQ_allD.clear();
+        allfeature_allQ_allD = new HashMap<>();
         try {
             featureNumbers = new Integer[]{1, 2, 3};
             this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
             this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("DOC_INDEX_PATH"))));
             this.loadIndexDocs();
-            this.field = "TEXT";
+//            this.field = "TEXT";
             calculateFeatures();
         } catch (IOException ex) {
             log.error(ex);
