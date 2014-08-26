@@ -150,7 +150,7 @@ public class Indexer extends EuroVocParser {
             while ((term = te.next()) != null) {
                 DocsEnum docsEnum = te.docs(null, null);
                 EuroVocConcept evc = ConceptGenerator(term, docsEnum, docsIReader);
-//                if(evc.getDocs().size() > minNumDocPerConcept)  //Filtering small concepts 
+                if(evc.getDocs().size() > minNumDocPerConcept)  //Filtering small concepts 
                     IndexConcept(evc);
             }
             this.writer.commit();
