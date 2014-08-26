@@ -19,27 +19,11 @@ public class EuroVocConcept {
     private String text;
     private ArrayList<String> docs;
 
-    public EuroVocConcept(String id, String title, String text, ArrayList<String> docs) {
+    public EuroVocConcept(String id, String text, String title, ArrayList<String> docs) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.docs = docs;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public ArrayList<String> getDocs() {
-        return docs;
     }
 
     public void setId(String id) {
@@ -57,6 +41,23 @@ public class EuroVocConcept {
     public void setDocs(ArrayList<String> docs) {
         this.docs = docs;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getText() {
+        return text;
+    }
+    public ArrayList<String> getDocs() {
+        return docs;
+    }
+
+  
 
     @Override
     public int hashCode() {

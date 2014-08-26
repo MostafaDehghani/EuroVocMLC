@@ -166,7 +166,7 @@ public class IndexInfo {
     
     /**
      * 
-     * <code>getDocumentLength</code> extracts the length of the given field the given document
+     * <code>getDocumentLength</code> extracts the length of the given field of the given document
      * 
      * @param docId
      * @param field field's name

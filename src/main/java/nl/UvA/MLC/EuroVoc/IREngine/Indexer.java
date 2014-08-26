@@ -1,12 +1,16 @@
 package nl.UvA.MLC.EuroVoc.IREngine;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import nl.UvA.LuceneFacility.IndexInfo;
 import nl.UvA.LuceneFacility.MyAnalyzer;
@@ -16,7 +20,6 @@ import nl.UvA.MLC.EuroVoc.EuroVocParser;
 import static nl.UvA.MLC.Settings.Config.configFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -31,6 +34,9 @@ import org.apache.lucene.search.DocIdSetIterator;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -43,7 +49,13 @@ public class Indexer extends EuroVocParser {
     private IndexWriter writer;
     private final Boolean stemming = Boolean.valueOf(configFile.getProperty("IF_STEMMING"));
     private final Boolean commonWordsRemoving = Boolean.valueOf(configFile.getProperty("IF_STOPWORD_REMOVING"));
+    private final Integer minDocLength = Integer.parseInt(configFile.getProperty("MIN_DOC_LENGTH"));
+    private final Integer minNumDocPerConcept = Integer.parseInt(configFile.getProperty("MIN_NUM_DOC_PER_CONCEPT"));
     private Map<String, Analyzer> analyzerMap = new HashMap<String, Analyzer>();
+    private Map<String, String> conceptDescs = new HashMap<String, String>();
+    private Map<String, ArrayList<String>> conceptUnDescs = new HashMap<>();
+    private Map<String, ArrayList<String>> conceptHierarchy_getParents = new HashMap<>();
+    private Map<String, ArrayList<String>> conceptHierarchy_getChild = new HashMap<>();
     public Indexer() {
 
         try {
@@ -60,7 +72,7 @@ public class Indexer extends EuroVocParser {
             PerFieldAnalyzerWrapper prfWrapper_1 = new PerFieldAnalyzerWrapper(analyzer_1, analyzerMap);
             IndexWriterConfig irc_1 = new IndexWriterConfig(Version.LUCENE_CURRENT, prfWrapper_1);
             this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("DOC_TMP_INDEX_PATH"))), irc_1);
-            fileReader(new File(configFile.getProperty("CORPUS_Con_PATH")));
+            fileReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
             this.writer.commit();
             this.writer.close();
             analyzer_1.close();
@@ -84,7 +96,7 @@ public class Indexer extends EuroVocParser {
                 PerFieldAnalyzerWrapper prfWrapper_2 = new PerFieldAnalyzerWrapper(analyzer_2, analyzerMap);
                 IndexWriterConfig irc_2 = new IndexWriterConfig(Version.LUCENE_CURRENT, prfWrapper_2);
                 this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("DOC_INDEX_PATH"))), irc_2);
-                fileReader(new File(configFile.getProperty("CORPUS_Con_PATH")));
+                fileReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
                 this.writer.commit();
                 this.writer.close();
                 analyzer_2.close();
@@ -99,8 +111,29 @@ public class Indexer extends EuroVocParser {
         }
 
     }
-
+    @Override
+    public void doSomeAction(EuroVocDoc EVdoc) {
+        Document doc = new Document();
+        if(EVdoc.getText().split("\\s+").length < minDocLength)  //Filtering small documents
+            return;
+        doc.add(new Field("ID", EVdoc.getId(), Field.Store.YES, Field.Index.NO));
+        doc.add(new Field("TITLE", EVdoc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        doc.add(new Field("TEXT", EVdoc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        String Classes = "";
+        for (String s : EVdoc.getClasses()) {
+            Classes += s + " ";
+        }
+        doc.add(new Field("CLASSES", Classes.trim(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS, Field.TermVector.YES));
+        try {
+            this.writer.addDocument(doc);
+        } catch (IOException ex) {
+            log.error(ex);
+        }
+        log.info("Document " + EVdoc.getId() + " has been indexed successfully...");
+    }
+    
     private void concepptIndexer(IndexReader docsIReader, ArrayList<String> commonWs) {
+            this.ConceptInfoExtractor();
         try {
             MyAnalyzer myAnalyzer = null;
             if (commonWs == null) {
@@ -117,7 +150,8 @@ public class Indexer extends EuroVocParser {
             while ((term = te.next()) != null) {
                 DocsEnum docsEnum = te.docs(null, null);
                 EuroVocConcept evc = ConceptGenerator(term, docsEnum, docsIReader);
-                IndexConcept(evc);
+//                if(evc.getDocs().size() > minNumDocPerConcept)  //Filtering small concepts 
+                    IndexConcept(evc);
             }
             this.writer.commit();
             this.writer.close();
@@ -133,7 +167,6 @@ public class Indexer extends EuroVocParser {
     }
 
     private void IndexConcept(EuroVocConcept evc) {
-        
         Document doc = new Document();
         doc.add(new Field("ID", evc.getId(), Field.Store.YES, Field.Index.NO));
         doc.add(new Field("TITLE", evc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
@@ -142,7 +175,20 @@ public class Indexer extends EuroVocParser {
         for (String s : evc.getDocs()) {
             docs += s + " ";
         }
-        doc.add(new Field("DOCS", docs.trim(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
+        doc.add(new Field("DOCS", docs.trim(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS,Field.TermVector.YES));
+        
+        ArrayList<String> Fields = this.ConceptInfoFieldExtractor(evc.getId());
+        
+        doc.add(new Field("PARENTS", Fields.get(0), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS, Field.TermVector.YES));
+        doc.add(new Field("CHILDREN", Fields.get(1), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS,  Field.TermVector.YES));
+        
+        doc.add(new Field("DESC", Fields.get(2), Field.Store.YES, Field.Index.ANALYZED,Field.TermVector.YES));
+        doc.add(new Field("UNDESC", Fields.get(3), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+        
+        doc.add(new Field("CUMDESC", Fields.get(4), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+        doc.add(new Field("CUMUNDESC", Fields.get(5), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+        
+        
         try {
             this.writer.addDocument(doc);
         } catch (IOException ex) {
@@ -171,25 +217,6 @@ public class Indexer extends EuroVocParser {
         return evc;
     }
 
-    @Override
-    public void doSomeAction(EuroVocDoc EVdoc) {
-        Document doc = new Document();
-        doc.add(new Field("ID", EVdoc.getId(), Field.Store.YES, Field.Index.NO));
-        doc.add(new Field("TITLE", EVdoc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
-        doc.add(new Field("TEXT", EVdoc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
-        String Classes = "";
-        for (String s : EVdoc.getClasses()) {
-            Classes += s + " ";
-        }
-        doc.add(new Field("CLASSES", Classes.trim(), Field.Store.YES, Field.Index.ANALYZED_NO_NORMS));
-        try {
-            this.writer.addDocument(doc);
-        } catch (IOException ex) {
-            log.error(ex);
-        }
-        log.info("Document " + EVdoc.getId() + " has been indexed successfully...");
-    }
-    
         private void preIndexerCleaning() {
         try {
             File tmpIndex = new File(configFile.getProperty("DOC_TMP_INDEX_PATH"));
@@ -220,8 +247,143 @@ public class Indexer extends EuroVocParser {
         }
         log.info("\n\n -----------------------CLeaning Finished--------------------------\n");
     }
+     
+    private void ConceptInfoExtractor(){
+        try {
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            org.w3c.dom.Document descDoc = dBuilder.parse(new File(configFile.getProperty("CONCEPTS_DESC_FILE_PATH")));
+            NodeList nList = descDoc.getElementsByTagName("RECORD");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) nNode;
+                    String id = element.getElementsByTagName("DESCRIPTEUR_ID").item(0).getTextContent();
+                    String desc = element.getElementsByTagName("LIBELLE").item(0).getTextContent();
+                    conceptDescs.put(id, desc);
+                }
+            }
+            log.info("Concepts describtions are loaded...");
+            
+            org.w3c.dom.Document unDescDoc = dBuilder.parse(new File(configFile.getProperty("CONCEPTS_UNDESC_FILE_PATH")));
+            nList = unDescDoc.getElementsByTagName("RECORD");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                ArrayList<String> unDescs = new ArrayList<>();
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) nNode;
+                    String id = element.getElementsByTagName("DESCRIPTEUR_ID").item(0).getTextContent();
+                    Node node = element.getElementsByTagName("UF").item(0);
+                    Element element1 = (Element) nNode;
+                    NodeList nList1 = element1.getElementsByTagName("UF_EL");
+                    for (int temp1 = 0; temp1 < nList1.getLength(); temp1++) {
+                       Node nNode1 = nList1.item(temp1);
+                       String unDesc = nNode1.getTextContent();
+                       unDescs.add(unDesc);
+                    }
+                    conceptUnDescs.put(id, unDescs);
+                }
+            }
+            log.info("Concepts undescribtions are loaded...");
+            BufferedReader br = new BufferedReader(new FileReader(new File(configFile.getProperty("CONCEPTS_HIERARCHY_FILE_PATH"))));
+            String line;
+            while((line = br.readLine())!=null){
+                String[] lineParts = line.split("\\s+");
+                ArrayList<String> child = conceptHierarchy_getChild.get(lineParts[0]);
+                if(child ==null){
+                    child = new ArrayList<>();
+                }
+                child.add(lineParts[1]);
+                conceptHierarchy_getChild.put(lineParts[0], child);
+                
+                ArrayList<String> parents = conceptHierarchy_getParents.get(lineParts[1]);
+                if(parents ==null){
+                    parents = new ArrayList<>();
+                }
+                parents.add(lineParts[0]);
+                conceptHierarchy_getParents.put(lineParts[1], parents);
+            }
+            br.close();
+            
+           log.info("Concepts hierarchy graph is loaded...");
+           
+        } catch (ParserConfigurationException ex) {
+            log.error(ex);
+        } catch (SAXException ex) {
+            log.error(ex);
+        } catch (IOException ex) {
+            log.error(ex);
+        }
+    }
+    
+    private ArrayList<String> ConceptInfoFieldExtractor(String docId){
+        ArrayList<String> fields = new ArrayList<>();
+        
+        String parents = "";
+        if(this.conceptHierarchy_getParents.containsKey(docId)){
+            for(String p : this.conceptHierarchy_getParents.get(docId)){
+                parents += p + " "; 
+            }
+        }
+        fields.add(parents.trim());
+        String children = "";
+        if(this.conceptHierarchy_getChild.containsKey(docId)){
+            for(String child : this.conceptHierarchy_getChild.get(docId)){
+                children += child + " "; 
+            }
+        }
+        fields.add(children.trim());
+        
+        String desc = this.conceptDescs.get(docId);
+        if(desc == null)
+            desc = "";
+        fields.add(desc);
+        String unDescs = "";
+        if(this.conceptUnDescs.containsKey(docId)){
+            for(String undesc : this.conceptUnDescs.get(docId)){
+                unDescs += undesc + " "; 
+            }
+        }
+        fields.add(unDescs.trim());
         
         
+        String cumDesc = this.recursiveDesc_Parents(docId);
+        fields.add(cumDesc.trim());
+        String cumUnDescs = this.recursiveUnDesc_Parents(docId);
+        fields.add(cumUnDescs.trim());
+        return fields;
+    }
+    
+    private String recursiveDesc_Parents(String docId){
+        String CumDesc = "";
+        if(this.conceptHierarchy_getParents.containsKey(docId)){
+            for(String pId: this.conceptHierarchy_getParents.get(docId)){
+                CumDesc += recursiveDesc_Parents(pId)+" ";
+            }
+        }
+        String tmp = this.conceptDescs.get(docId);
+        if(tmp == null)
+            tmp = "";
+        return CumDesc + tmp ;
+    }
+    
+    private String recursiveUnDesc_Parents(String docId){
+        String CumDesc = "";
+        if(this.conceptHierarchy_getParents.containsKey(docId)){
+            for(String pId: this.conceptHierarchy_getParents.get(docId)){
+                CumDesc += recursiveUnDesc_Parents(pId)+" ";
+            }
+        }
+        String unDescs= "";
+        if(this.conceptUnDescs.containsKey(docId)){
+            for(String s: this.conceptUnDescs.get(docId)){
+                unDescs += s + " "; 
+            }
+        }
+        return CumDesc + unDescs.trim();
+    }
+    
+    
     public static void main(String[] args) throws ParserConfigurationException, SAXException, SQLException {
         new Indexer();
     }

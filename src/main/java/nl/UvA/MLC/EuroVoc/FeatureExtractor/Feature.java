@@ -20,6 +20,12 @@ public class Feature {
         this.dId = dId;
         this.dRankq = dRankq;
     }
+    
+     public Feature(String fName, Double fValue, String dId) {
+        this.fName = fName;
+        this.fValue = fValue;
+        this.dId = dId;
+    }
 
     public String getfName() {
         return fName;

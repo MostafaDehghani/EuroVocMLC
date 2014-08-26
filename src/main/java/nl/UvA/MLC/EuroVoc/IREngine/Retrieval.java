@@ -52,14 +52,14 @@ public class Retrieval {
     private final Boolean commonWordsRemoving = Boolean.valueOf(configFile.getProperty("IF_STOPWORD_REMOVING"));
     private MyAnalyzer myAnalyzer = null;
     private ArrayList<String> commonWs = null;
-    private TreeMap<Integer, String> docsMap = null;
+    private TreeMap<Integer, String> indexId_docID_Map = null;
 
     public void setIreader(IndexReader ireader) {
         this.ireader = ireader;
     }
 
-    public void setDocsMap(TreeMap<Integer, String> docsMap) {
-        this.docsMap = docsMap;
+    public void setIndexId_docID_Map(TreeMap<Integer, String> docsMap) {
+        this.indexId_docID_Map = docsMap;
     }
     
 
@@ -112,9 +112,9 @@ public class Retrieval {
 		for (int i = 0; i < hits.length; i++) {
 			Double Score = (double) hits[i].score;
 //			Document hitDoc = ireader.document(hits[i].doc);
-//                        Document hitDoc = docsMap.get(hits[i].doc); 
+//                        Document hitDoc = indexId_docID_Map.get(hits[i].doc); 
 //			String docID = hitDoc.get("ID");
-                        String docID = docsMap.get(hits[i].doc);
+                        String docID = this.indexId_docID_Map.get(hits[i].doc);
 			Feature f = new Feature(simFunction.toString(),Score, qID, docID, i+1);
                         results.put(docID, f);
 		}

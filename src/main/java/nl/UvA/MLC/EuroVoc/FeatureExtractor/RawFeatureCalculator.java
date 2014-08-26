@@ -8,10 +8,8 @@ package nl.UvA.MLC.EuroVoc.FeatureExtractor;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.TreeMap;
 import nl.UvA.MLC.EuroVoc.EuroVocDoc;
 import nl.UvA.MLC.EuroVoc.EuroVocParser;
-import nl.UvA.MLC.EuroVoc.IREngine.Retrieval;
 import static nl.UvA.MLC.Settings.Config.configFile;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.SimpleFSDirectory;
@@ -28,10 +26,10 @@ public class RawFeatureCalculator extends EuroVocParser {
     private IndexReader ireader = null;
     private HashMap<EuroVocDoc, HashMap<String, Feature>> feature_allQ_allD = new HashMap<EuroVocDoc, HashMap<String, Feature>>();
     private HashMap<Integer, HashMap<EuroVocDoc, HashMap<String, Feature>>> allfeature_allQ_allD = new HashMap<Integer, HashMap<EuroVocDoc, HashMap<String, Feature>>>();
-    private Retrieval ret = null;
     private Integer featureNumber = null;
     private Integer[] featureNumbers = null;
-    private TreeMap<Integer, String> docsMap = null;
+    private FeaturesDefinition fd = null;
+    
     
     /**
      * <code>featureNumbers</code>: Features numbers are defined as follow: 1-
@@ -42,79 +40,103 @@ public class RawFeatureCalculator extends EuroVocParser {
      *
      *
      */
-    private Retrieval getRetriever() {
-        if (this.ret == null) {
-            this.ret = new Retrieval();
-        }
-        return ret;
-    }
 
+    
+    
     @Override
     public void doSomeAction(EuroVocDoc doc) {
-        FeaturesDefinition fd = new FeaturesDefinition();
         HashMap<String, Feature> f = null;
-        Retrieval retr = null;
         switch (featureNumber) {
             case 1:
-                retr = this.getRetriever();
-                retr.setIreader(this.ireader);
-                retr.setField("TEXT");
-                retr.setSimFName("LMD");
-                retr.setDocsMap(this.docsMap);
-                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                f = fd.F_1_2_3_retrievalBased(doc,"TEXT", "LMD");
                 this.feature_allQ_allD.put(doc, f);
                 break;
             case 2:
-                retr = this.getRetriever();
-                retr.setIreader(this.ireader);
-                retr.setField("TEXT");
-                retr.setSimFName("LMJM");
-                retr.setDocsMap(this.docsMap);
-                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                f = fd.F_1_2_3_retrievalBased(doc,"TEXT", "LMJM");
                 this.feature_allQ_allD.put(doc, f);
                 break;
             case 3:
-                retr = this.getRetriever();
-                retr.setIreader(this.ireader);
-                retr.setField("TITLE");
-                retr.setSimFName("BM25");
-                retr.setDocsMap(this.docsMap);
-                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                f = fd.F_1_2_3_retrievalBased(doc,"TEXT", "BM25");
                 this.feature_allQ_allD.put(doc, f);
                 break;
             case 4:
-                retr = this.getRetriever();
-                retr.setIreader(this.ireader);
-                retr.setField("TITLE");
-                retr.setSimFName("LMD");
-                retr.setDocsMap(this.docsMap);
-                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                f = fd.F_1_2_3_retrievalBased(doc, "TITLE", "LMD");
                 this.feature_allQ_allD.put(doc, f);
                 break;
             case 5:
-                retr = this.getRetriever();
-                retr.setIreader(this.ireader);
-                retr.setField("TITLE");
-                retr.setSimFName("LMJM");
-                retr.setDocsMap(this.docsMap);
-                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                f = fd.F_1_2_3_retrievalBased(doc, "TITLE", "LMJM");
                 this.feature_allQ_allD.put(doc, f);
                 break;
             case 6:
-                retr = this.getRetriever();
-                retr.setIreader(this.ireader);
-                retr.setField("TEXT");
-                retr.setSimFName("BM25");
-                retr.setDocsMap(this.docsMap);
-                f = fd.F_1_2_3_retrievalBased(doc, retr);
+                f = fd.F_1_2_3_retrievalBased(doc,"TITLE","BM25");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 7:
+                f = fd.F_1_2_3_retrievalBased(doc, "DESC","LMD");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 8:
+                f = fd.F_1_2_3_retrievalBased(doc, "DESC", "LMJM");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 9:
+                f = fd.F_1_2_3_retrievalBased(doc, "DESC","BM25");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 10:
+                f = fd.F_1_2_3_retrievalBased(doc, "UNDESC", "LMD");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 11:
+                f = fd.F_1_2_3_retrievalBased(doc, "UNDESC", "LMJM");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 12:
+                f = fd.F_1_2_3_retrievalBased(doc, "UNDESC", "BM25");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 13:
+                f = fd.F_1_2_3_retrievalBased(doc, "CUMDESC","LMD");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 14:
+                f = fd.F_1_2_3_retrievalBased(doc, "CUMDESC", "LMJM");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 15:
+                f = fd.F_1_2_3_retrievalBased(doc, "CUMDESC", "BM25");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 16:
+                f = fd.F_1_2_3_retrievalBased(doc, "CUMUNDESC", "LMD");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 17:
+                f = fd.F_1_2_3_retrievalBased(doc, "CUMUNDESC", "LMJM");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 18:
+                f = fd.F_1_2_3_retrievalBased(doc, "CUMUNDESC", "BM25");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 19:
+                f = fd.F_4_degreeInHierarchy(doc,"p");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 20:
+                f = fd.F_4_degreeInHierarchy(doc,"c");
+                this.feature_allQ_allD.put(doc, f);
+                break;
+            case 21:
+                f = fd.F_5_docNum(doc);
                 this.feature_allQ_allD.put(doc, f);
                 break;
 
             default:
-                System.out.println("Not valid number");
+                log.info("Not valid feature number: " + featureNumber);
         }
         feature_allQ_allD.put(doc, f);
-        System.out.println("doc " + doc.getId() + " is processed...");
+        log.info("feature " + featureNumber + " has been calculated for document " + doc.getId());
     }
 
     private void calculateFeatures() {
@@ -129,11 +151,10 @@ public class RawFeatureCalculator extends EuroVocParser {
     public HashMap<Integer, HashMap<EuroVocDoc, HashMap<String, Feature>>> conceptBaseFeatureCalc() {
         this.allfeature_allQ_allD = new HashMap<>();
         try {
-            this.featureNumbers = new Integer[]{1, 2, 3, 4, 5, 6};
+            this.featureNumbers = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
             this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
             this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
-            this.loadIndexDocs();
-//            this.field = "TEXT";
+            this.fd = new FeaturesDefinition(this.ireader);
             calculateFeatures();
         } catch (IOException ex) {
             log.error(ex);
@@ -147,24 +168,17 @@ public class RawFeatureCalculator extends EuroVocParser {
             featureNumbers = new Integer[]{1, 2, 3};
             this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
             this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("DOC_INDEX_PATH"))));
-            this.loadIndexDocs();
-//            this.field = "TEXT";
             calculateFeatures();
         } catch (IOException ex) {
             log.error(ex);
         }
         return this.allfeature_allQ_allD;
     }
-    private void loadIndexDocs() {
-        this.docsMap = new TreeMap();
-
-        for (int i = 0; i < this.ireader.numDocs(); i++) {
-            try {
-                this.docsMap.put(i, this.ireader.document(i).get("ID"));
-            } catch (IOException ex) {
-                log.error(ex);
-            }
-        }
+    
+    public static void main(String[] args) {
+        RawFeatureCalculator rfc = new RawFeatureCalculator();
+        HashMap<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> RawFeatures = rfc.conceptBaseFeatureCalc();
+        System.out.println("==");
     }
 
 }
