@@ -49,7 +49,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                nl.UvA.MLC.EuroVoc.FeatureExtractor.FeatureCalculator
+                                nl.UvA.MLC.EuroVoc.FeatureExtractor.main
                             </mainClass>
                         </manifest>
                     </archive>

@@ -26,6 +26,10 @@ public class FeaturePropagator {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FeaturePropagator.class.getName());
     public Map<String, Map<String, Double>> conceptGraph = new HashMap<String, Map<String, Double>>();
 
+     public FeaturePropagator(){
+         
+     }
+    
     public FeaturePropagator(String graphPath) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(graphPath)));
@@ -163,7 +167,7 @@ public class FeaturePropagator {
         return features;
     }
 
-    public static void main(String[] args) {
+    public void main() {
         String graphFilePath = Config.configFile.getProperty("CONCEPT_GRAPH_FILE_PATH");
         FeaturePropagator fp = new FeaturePropagator(graphFilePath);
         TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> features = fp.propagateAndConcatFeatures();

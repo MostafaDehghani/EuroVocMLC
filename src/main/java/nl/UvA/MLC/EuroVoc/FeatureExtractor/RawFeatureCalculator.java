@@ -176,7 +176,7 @@ public class RawFeatureCalculator extends EuroVocParser {
         return this.allfeature_allQ_allD;
     }
     
-     public static void main(String[] args) throws IOException {
+     public void main(){
         RawFeatureCalculator rfc = new RawFeatureCalculator();
         HashMap<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> rawFeatures = rfc.conceptBaseFeatureCalc();
         //Normalizing Features
