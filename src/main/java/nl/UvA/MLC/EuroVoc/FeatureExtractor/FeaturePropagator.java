@@ -12,9 +12,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import nl.UvA.MLC.EuroVoc.EuroVocDoc;
 import nl.UvA.MLC.Settings.Config;
 
 /**
@@ -22,13 +19,14 @@ import nl.UvA.MLC.Settings.Config;
  * @author Mostafa Dehgani
  */
 public class FeaturePropagator {
-
+    
+    HashSet<Integer> propagationBlackList = null;
     Integer numIteration = Integer.parseInt(Config.configFile.getProperty("ITERATION_NUM"));
     Double lambda = Double.parseDouble(Config.configFile.getProperty("LAMBDA"));
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FeaturePropagator.class.getName());
     public Map<String, Map<String, Double>> conceptGraph = new HashMap<String, Map<String, Double>>();
 
-    public void FeaturePropagator(String graphPath) {
+    public FeaturePropagator(String graphPath) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(graphPath)));
             String str = "";
@@ -59,6 +57,12 @@ public class FeaturePropagator {
         } catch (IOException ex) {
             log.error(ex);
         }
+        
+        //load blacklist
+        this.propagationBlackList = new HashSet<Integer>();
+        for(String s: Config.configFile.getProperty("PROPAGATION_BLACKLIST").split(",")){
+            this.propagationBlackList.add(Integer.parseInt(s));
+        }
     }
 
     public HashMap<String, Feature> propagator(String qId, HashMap<String, Feature> features) {
@@ -88,17 +92,18 @@ public class FeaturePropagator {
         return oldValues;
     }
 
-    public TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> propagateAndConcatFeatures(String graphFilePath, TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> RawFeatures) {
+    public TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> propagateAndConcatFeatures() {
+        TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> RawFeatures = this.readRawFeatures();
         FeatureNormalizer fn = new FeatureNormalizer();
-        FeaturePropagator fp = new FeaturePropagator();
-        fp.FeaturePropagator(graphFilePath);
         TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> tempRawFeatures = new TreeMap<>();
         TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> FinaltempRawFeatures = new TreeMap<>();
         int fnumber = RawFeatures.size();
         for (Entry<Integer, HashMap<String, HashMap<String, Feature>>> ent : RawFeatures.entrySet()) {
+            if(this.propagationBlackList.contains(ent.getKey()))
+                continue;
             HashMap<String, HashMap<String, Feature>> propagatedFeature = new HashMap<>();
             for (Entry<String, HashMap<String, Feature>> ent2 : ent.getValue().entrySet()) {
-                HashMap<String, Feature> proFeatures = fp.propagator(ent2.getKey(), ent2.getValue());
+                HashMap<String, Feature> proFeatures = this.propagator(ent2.getKey(), ent2.getValue());
                 propagatedFeature.put(ent2.getKey(), proFeatures);
             }
             tempRawFeatures.put(++fnumber, propagatedFeature);
@@ -137,6 +142,7 @@ public class FeaturePropagator {
                     HashMap<String, Feature> oneQ_allD = null;
                     if (allq_AllD_oneF == null) {
                         allq_AllD_oneF = new HashMap<String, HashMap<String, Feature>>();
+                        oneQ_allD = new HashMap<String, Feature>();
                     } else {
                         oneQ_allD = allq_AllD_oneF.get(qId);
                         if (oneQ_allD == null) {
@@ -158,9 +164,9 @@ public class FeaturePropagator {
     }
 
     public static void main(String[] args) {
-        FeaturePropagator fp = new FeaturePropagator();
         String graphFilePath = Config.configFile.getProperty("CONCEPT_GRAPH_FILE_PATH");
-        TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> features = fp.propagateAndConcatFeatures(graphFilePath, fp.readRawFeatures());
+        FeaturePropagator fp = new FeaturePropagator(graphFilePath);
+        TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> features = fp.propagateAndConcatFeatures();
         //K-Fold CV
         String inDir = Config.configFile.getProperty("CORPUS_Eval_PATH");;
         String outDir = Config.configFile.getProperty("FEATURE_PROPAGATED_K-FOLD_PATH");
