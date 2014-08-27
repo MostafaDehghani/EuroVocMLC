@@ -55,8 +55,6 @@ public class FeaturesDefinition {
         this.loadIndexDocs();
     }
     
-    
-    
     private void loadIndexDocs() {
         this.indexId_docId_map = new TreeMap();
         for (int i = 0; i < this.ireader.numDocs(); i++) {

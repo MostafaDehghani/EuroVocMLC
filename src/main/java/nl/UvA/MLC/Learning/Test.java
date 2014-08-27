@@ -34,7 +34,7 @@ public class Test {
                 String[] lineParts1 = testLine.split(" # ");
                 String[] lineParts2 = lineParts1[0].split("\\s+");
                 String[] lineParts3 = lineParts1[1].split("\\s+");
-                resInstance resI = new resInstance(lineParts3[1],lineParts3[0],Double.parseDouble(scoreBR.readLine()),lineParts2[0]);
+                resInstance resI = new resInstance(lineParts3[0],lineParts3[1],Double.parseDouble(scoreBR.readLine()),lineParts2[0]);
                 res.add(resI);
 //                System.out.println(resI.toString());
             }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import nl.UvA.MLC.EuroVoc.EuroVocDoc;
 import nl.UvA.MLC.EuroVoc.EuroVocParser;
+import nl.UvA.MLC.Settings.Config;
 import static nl.UvA.MLC.Settings.Config.configFile;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.SimpleFSDirectory;
@@ -175,10 +176,17 @@ public class RawFeatureCalculator extends EuroVocParser {
         return this.allfeature_allQ_allD;
     }
     
-    public static void main(String[] args) {
+     public static void main(String[] args) throws IOException {
         RawFeatureCalculator rfc = new RawFeatureCalculator();
-        HashMap<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> RawFeatures = rfc.conceptBaseFeatureCalc();
-        System.out.println("==");
+        HashMap<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> rawFeatures = rfc.conceptBaseFeatureCalc();
+        //Normalizing Features
+        FeatureNormalizer fn = new FeatureNormalizer();
+        HashMap<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> normalizedRawFeatures = fn.normalize(rawFeatures);
+        //K-Fold CV
+        String inDir = Config.configFile.getProperty("CORPUS_Eval_PATH");;
+        String outDir =Config.configFile.getProperty("FEATURE_K-FOLD_PATH");
+        K_Fold_CrossValidation KFCV = new K_Fold_CrossValidation();
+        KFCV.crossValidation(rawFeatures, outDir, inDir);
     }
 
 }

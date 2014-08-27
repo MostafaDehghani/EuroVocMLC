@@ -12,6 +12,7 @@ public class Feature {
     private String qId;
     private String dId;
     private Integer dRankq;
+    private String label;
 
     public Feature(String fName, Double fValue, String qId, String dId, Integer dRankq) {
         this.fName = fName;
@@ -21,10 +22,22 @@ public class Feature {
         this.dRankq = dRankq;
     }
     
+    public Feature(String fName, Double fValue, String qId, String dId, String label) {
+        this.fName = fName;
+        this.fValue = fValue;
+        this.qId = qId;
+        this.dId = dId;
+        this.label = label;
+    }
+    
      public Feature(String fName, Double fValue, String dId) {
         this.fName = fName;
         this.fValue = fValue;
         this.dId = dId;
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public String getfName() {
@@ -45,6 +58,10 @@ public class Feature {
     
     public Integer getdRankq() {
         return dRankq;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public void setfName(String fName) {
