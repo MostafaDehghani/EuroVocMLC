@@ -1,9 +1,7 @@
 package nl.UvA.MLC.EuroVoc.IREngine;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -285,33 +283,34 @@ public class Indexer extends EuroVocParser {
                 }
             }
             log.info("Concepts undescribtions are loaded...");
-            BufferedReader br = new BufferedReader(new FileReader(new File(configFile.getProperty("CONCEPTS_HIERARCHY_FILE_PATH"))));
-            String line;
-            while((line = br.readLine())!=null){
-                String[] lineParts = line.split("\\s+");
-                ArrayList<String> child = conceptHierarchy_getChild.get(lineParts[0]);
-                if(child ==null){
-                    child = new ArrayList<>();
-                }
-                child.add(lineParts[1]);
-                conceptHierarchy_getChild.put(lineParts[0], child);
-                
-                ArrayList<String> parents = conceptHierarchy_getParents.get(lineParts[1]);
-                if(parents ==null){
-                    parents = new ArrayList<>();
-                }
-                parents.add(lineParts[0]);
-                conceptHierarchy_getParents.put(lineParts[1], parents);
-            }
-            br.close();
             
-           log.info("Concepts hierarchy graph is loaded...");
+            org.w3c.dom.Document hierarchydoc = dBuilder.parse(new File(configFile.getProperty("CONCEPTS_HIERARCHY_FILE_PATH")));
+            nList = hierarchydoc.getElementsByTagName("RECORD");
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                Node nNode = nList.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) nNode;
+                    String p = element.getElementsByTagName("SOURCE_ID").item(0).getTextContent();
+                    String c = element.getElementsByTagName("CIBLE_ID").item(0).getTextContent();
+                    
+                    ArrayList<String> child = conceptHierarchy_getChild.get(p);
+                    if(child ==null){
+                        child = new ArrayList<>();
+                    }
+                    child.add(c);
+                    conceptHierarchy_getChild.put(p, child);
+
+                    ArrayList<String> parents = conceptHierarchy_getParents.get(c);
+                    if(parents ==null){
+                        parents = new ArrayList<>();
+                    }
+                    parents.add(p);
+                    conceptHierarchy_getParents.put(c, parents);
+                    }
+            }
+            log.info("Concepts hierarchy graph is loaded...");
            
-        } catch (ParserConfigurationException ex) {
-            log.error(ex);
-        } catch (SAXException ex) {
-            log.error(ex);
-        } catch (IOException ex) {
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
             log.error(ex);
         }
     }

@@ -33,7 +33,7 @@ public class ConceptGraphConstructor extends EuroVocParser{
     
     public void processDoc(EuroVocDoc doc)
     {
-        System.out.println("Doc " + doc.getId() + " has been processing");
+        log.info("Doc " + doc.getId() + " has been processing");
         ArrayList<String> classes = doc.getClasses();
         for(String c1 : classes)
             for(String c2 : classes)
@@ -83,7 +83,7 @@ public class ConceptGraphConstructor extends EuroVocParser{
 
     public void writeToFileStat() throws FileNotFoundException, IOException
     {
-        File file = new File(configFile.getProperty("CONCEPT_GRAPH_FILE_PATH"));
+        File file = new File(configFile.getProperty("CONCEPT_GRAPH_STAT_FILE_PATH"));
         FileWriter fw = new FileWriter(file);
         System.out.println("Num of concepts: " + edgeList.size());
         BufferedWriter bw = new BufferedWriter(fw);
@@ -98,6 +98,7 @@ public class ConceptGraphConstructor extends EuroVocParser{
     public void graphMaker() throws IOException{
         fileReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
         this.writeToFile();
+        this.writeToFileStat();
     }
     public static void main(String[] args) throws IOException
     {
