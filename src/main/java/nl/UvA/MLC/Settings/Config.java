@@ -16,7 +16,7 @@ public class Config {
             	ClassLoader loader = Thread.currentThread().getContextClassLoader();  
 //	        cFile = new File("Config.properties");
 //              InputStream stream = new FileInputStream(cFile);            
-	      InputStream stream = Config.class.getResourceAsStream("/Configes/Config.properties");
+	      InputStream stream = Config.class.getResourceAsStream("/Config.properties");
           configFile.load(stream);  
         } catch (IOException e) {
             e.printStackTrace();

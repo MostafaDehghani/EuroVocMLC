@@ -152,7 +152,7 @@ public class K_Fold_CrossValidation {
                 FileWriter fw = new FileWriter(file);
                 BufferedWriter bw = new BufferedWriter(fw);
                 
-                BufferedReader br = new BufferedReader(new FileReader(new File("/home/hazarbo1/data/K_Fold_DOCSNAMES/" + "fold" + i + "/testDocs.txt")));
+                BufferedReader br = new BufferedReader(new FileReader(new File(configFile.getProperty("K_Fold_DOCSNAMES") + "fold" + i + "/testDocs.txt")));
                 ArrayList<String> list2 = new ArrayList<>();
                 int qid = 0;
                 String s;

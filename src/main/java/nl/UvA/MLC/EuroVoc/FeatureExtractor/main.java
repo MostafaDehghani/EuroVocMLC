@@ -15,7 +15,7 @@ public class main {
         RawFeatureCalculator rfc = new RawFeatureCalculator();
         rfc.main();
         FeaturePropagator fp = new FeaturePropagator();
-        fp.main();
+        fp.main(); 
     }
     
 }
