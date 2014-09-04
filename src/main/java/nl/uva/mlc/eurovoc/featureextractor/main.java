@@ -14,8 +14,8 @@ public class main {
     public static void main(String[] args) {
         RawFeatureCalculator rfc = new RawFeatureCalculator();
         rfc.main();
-        FeaturePropagator fp = new FeaturePropagator();
-        fp.main(); 
+//        FeaturePropagator fp = new FeaturePropagator();
+//        fp.main(); 
     }
     
 }

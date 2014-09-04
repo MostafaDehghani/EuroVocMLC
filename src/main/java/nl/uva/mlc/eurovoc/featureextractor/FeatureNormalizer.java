@@ -35,22 +35,17 @@ public class FeatureNormalizer {
         }
         return normalizeFeatures;
     }
-    public HashMap<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> normalize(HashMap<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> features){
-        HashMap<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> RawFeatures = new HashMap<>();
-        FeatureNormalizer fn = new FeatureNormalizer();
-        for(Entry<Integer,HashMap<EuroVocDoc,HashMap<String,Feature>>> ent : features.entrySet())
+    
+    public TreeMap<Integer, HashMap<String, Feature>> oneQueryNormalizer(TreeMap<Integer, HashMap<String, Feature>> features){
+        TreeMap<Integer,HashMap<String,Feature>> NormalizedFeatures = new TreeMap<>();
+        for(Entry<Integer,HashMap<String,Feature>> ent : features.entrySet())
         {
-            HashMap<EuroVocDoc,HashMap<String,Feature>> temp = new HashMap<>();
-            for(Entry<EuroVocDoc,HashMap<String,Feature>> ent2 : ent.getValue().entrySet())
-            {
-                temp.put(ent2.getKey(), fn.normalize(ent2.getValue()));
-            }
-            RawFeatures.put(ent.getKey(), temp);
+            NormalizedFeatures.put(ent.getKey(), this.normalize(ent.getValue()));
         }
-        
-        return RawFeatures;
+        return NormalizedFeatures;
     }
-    public TreeMap<Integer,HashMap<String,HashMap<String,Feature>>> normalize(TreeMap<Integer,HashMap<String,HashMap<String,Feature>>> features){
+    
+    public TreeMap<Integer,HashMap<String,HashMap<String,Feature>>> allQueryNormalizer(TreeMap<Integer,HashMap<String,HashMap<String,Feature>>> features){
         TreeMap<Integer,HashMap<String,HashMap<String,Feature>>> RawFeatures = new TreeMap<>();
         FeatureNormalizer fn = new FeatureNormalizer();
         for(Entry<Integer,HashMap<String,HashMap<String,Feature>>> ent : features.entrySet())
@@ -62,8 +57,7 @@ public class FeatureNormalizer {
             }
             RawFeatures.put(ent.getKey(), temp);
         }
-        
         return RawFeatures;
     }
-    
+   
 }

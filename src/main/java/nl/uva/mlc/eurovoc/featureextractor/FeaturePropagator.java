@@ -118,7 +118,7 @@ public class FeaturePropagator {
             tempRawFeatures.put(++fnumber, propagatedFeature);
         }
 
-        FinaltempRawFeatures = fn.normalize(tempRawFeatures);
+        FinaltempRawFeatures = fn.allQueryNormalizer(tempRawFeatures);
         TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> FinalFeatures = new TreeMap<>();
         for (Entry<Integer, HashMap<String, HashMap<String, Feature>>> ent : RawFeatures.entrySet()) {
             FinalFeatures.put(ent.getKey(), ent.getValue());
@@ -181,8 +181,6 @@ public class FeaturePropagator {
                     feature.put(fNum, allq_AllD_oneF);
                 }
             }
-            //
-//            this.addFeatures(this.propagateAndConcatFeatures(feature));
             this.addFeature2File(this.propagateAndConcatFeatures(feature));
             log.info("Feature propagation is completed successfully for all queries");
             feature = new TreeMap<>();
@@ -194,15 +192,7 @@ public class FeaturePropagator {
             log.error(ex);
         }        
     }
-    private void addFeatures(TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> f){
-     for(Map.Entry<Integer, HashMap<String, HashMap<String, Feature>>> ent: f.entrySet()){
-          HashMap<String, HashMap<String, Feature>> tmp = this.features.get(ent.getKey());
-          if(tmp==null)
-              tmp = new HashMap<>();
-          tmp.putAll(ent.getValue());
-          this.features.put(ent.getKey(), tmp);
-     }   
-    }
+
     private void addFeature2File(TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> f){
         TreeMap<String,HashMap<String, TreeMap<Integer,Feature>>> lines = new TreeMap<>();
         Set<String> qIds =  f.firstEntry().getValue().keySet();
@@ -254,13 +244,6 @@ public class FeaturePropagator {
         String graphFilePath = Config.configFile.getProperty("CONCEPT_GRAPH_FILE_PATH");
         FeaturePropagator fp = new FeaturePropagator(graphFilePath);
         fp.readRawFeaturesAndPropagation();
-        //K-Fold CV
-//        log.info("partitioning data in to K-folds is started....");
-//        String inDir = Config.configFile.getProperty("CORPUS_Eval_PATH");;
-//        String outDir = Config.configFile.getProperty("FEATURE_PROPAGATED_K-FOLD_PATH");
-//        K_Fold_CrossValidation KFCV = new K_Fold_CrossValidation();
-//        KFCV.crossValidation(fp.features, outDir, inDir);
-//        log.info("Features are ready for train/test stage...");
         
     }
 }
