@@ -33,6 +33,10 @@ public class RawFeatureCalculator extends EuroVocParser {
     private FeaturesDefinition fd = null;
     private FeatureNormalizer fn = new FeatureNormalizer();
     private Integer qId=1;
+
+    public void setFd(FeaturesDefinition fd) {
+        this.fd = fd;
+    }
     
     
     /**
@@ -59,7 +63,7 @@ public class RawFeatureCalculator extends EuroVocParser {
 
     }
 
-    private HashMap<String, Feature> calculateFeatures(EuroVocDoc docAsQuery, Integer fnum) {
+    public HashMap<String, Feature> calculateFeatures(EuroVocDoc docAsQuery, Integer fnum) {
        HashMap<String, Feature> allFeature_oneQ_allD = new HashMap<String, Feature>();
         HashMap<String, Feature> f = null;
         List<Float> params = null;

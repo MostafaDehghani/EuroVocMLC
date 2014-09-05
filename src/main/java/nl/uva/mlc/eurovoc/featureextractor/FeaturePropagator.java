@@ -31,7 +31,16 @@ public class FeaturePropagator {
     public Map<String, Map<String, Double>> conceptGraph = new HashMap<String, Map<String, Double>>();
     private TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> features;
 
-     public FeaturePropagator(){
+    public void setNumIteration(Integer numIteration) {
+        this.numIteration = numIteration;
+    }
+
+    public void setLambda(Double lambda) {
+        this.lambda = lambda;
+    }
+
+    
+    public FeaturePropagator(){
         features = new TreeMap<Integer, HashMap<String, HashMap<String, Feature>>>();   
      }
     
@@ -75,7 +84,7 @@ public class FeaturePropagator {
         }
     }
 
-    public HashMap<String, Feature> propagator(String qId, HashMap<String, Feature> features) {
+    public HashMap<String, Feature> propagator(HashMap<String, Feature> features) {
         int itr = 0;
         FeatureNormalizer fn = new FeatureNormalizer();
         HashMap<String, Feature> oldValues = features;
@@ -112,7 +121,7 @@ public class FeaturePropagator {
                 continue;
             HashMap<String, HashMap<String, Feature>> propagatedFeature = new HashMap<>();
             for (Entry<String, HashMap<String, Feature>> ent2 : ent.getValue().entrySet()) {
-                HashMap<String, Feature> proFeatures = this.propagator(ent2.getKey(), ent2.getValue());
+                HashMap<String, Feature> proFeatures = this.propagator(ent2.getValue());
                 propagatedFeature.put(ent2.getKey(), proFeatures);
             }
             tempRawFeatures.put(++fnumber, propagatedFeature);

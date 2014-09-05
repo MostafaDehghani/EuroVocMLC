@@ -30,17 +30,21 @@ public class Test {
             BufferedWriter resultBW = new  BufferedWriter(new FileWriter(new File(resultPath)));
             BufferedWriter judgeBW = new  BufferedWriter(new FileWriter(new File(judgePath)));
             String testLine;
+            int i=0;
             while((testLine=testBR.readLine())!=null){
                 String[] lineParts1 = testLine.split(" # ");
                 String[] lineParts2 = lineParts1[0].split("\\s+");
                 String[] lineParts3 = lineParts1[1].split("\\s+");
                 resInstance resI = new resInstance(lineParts3[0],lineParts3[1],Double.parseDouble(scoreBR.readLine()),lineParts2[0]);
                 res.add(resI);
-//                System.out.println(resI.toString());
+                if(++i % 10000 == 0)
+                    System.out.println(i + " " + resI.toString());
             }
+            log.info("sorting....");
             Collections.sort(res, new resInstanceComparator());
             String qidTmp= "null";
             int rank =0;
+            log.info("writing results and judgment files....");
             for(Integer index=0; index< res.size(); index++){
                 if(!res.get(index).qId.equals(qidTmp)){
                     rank = 0;
@@ -58,7 +62,7 @@ public class Test {
     
     public static void main(String[] args) {
         Test t = new Test();
-        t.trecEvalInputProvider("/home/mosi/Desktop/test/test.txt","/home/mosi/Desktop/test/score.txt", "/home/mosi/Desktop/test/res.txt", "/home/mosi/Desktop/test/judge.txt");
+        t.trecEvalInputProvider("/Users/Mosi/Desktop/svmrank/all_folds.txt","/Users/Mosi/Desktop/svmrank/score.txt", "/Users/Mosi/Desktop/svmrank/res.txt", "/Users/Mosi/Desktop/svmrank/judge.txt");
     }
     
     
