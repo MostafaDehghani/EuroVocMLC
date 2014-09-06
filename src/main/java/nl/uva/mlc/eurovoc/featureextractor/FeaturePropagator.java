@@ -29,6 +29,7 @@ public class FeaturePropagator {
     Double lambda = Double.parseDouble(Config.configFile.getProperty("LAMBDA"));
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FeaturePropagator.class.getName());
     public Map<String, Map<String, Double>> conceptGraph = new HashMap<String, Map<String, Double>>();
+    public Map<String, Double> propagationGraph = new HashMap<String, Double>();
     private TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> features;
 
     public void setNumIteration(Integer numIteration) {
@@ -71,6 +72,14 @@ public class FeaturePropagator {
                 }
 
             }
+            
+            for(Entry<String, Map<String, Double>> ent : conceptGraph.entrySet())
+            {
+                double sum = 0;
+                for(Entry<String, Double> ent2 : ent.getValue().entrySet())
+                    sum += ent2.getValue();
+                propagationGraph.put(ent.getKey(), sum);
+            }
         } catch (FileNotFoundException ex) {
             log.error(ex);
         } catch (IOException ex) {
@@ -84,21 +93,18 @@ public class FeaturePropagator {
         }
     }
 
-    public HashMap<String, Feature> propagator(HashMap<String, Feature> features) {
+     public HashMap<String, Feature> propagator(HashMap<String, Feature> features) {
         int itr = 0;
         FeatureNormalizer fn = new FeatureNormalizer();
         HashMap<String, Feature> oldValues = features;
-        HashMap<String, Feature> newValues = new HashMap<>();
+        //HashMap<String, Feature> newValues = new HashMap<>();
         while (itr < numIteration) {
+            HashMap<String, Feature> newValues = new HashMap<>();
             for (Entry<String, Feature> ent : oldValues.entrySet()) {
                 double newValue = lambda * ent.getValue().getfValue();
-                double sumLinks = 0;
-                for (Entry<String, Double> ent2 : conceptGraph.get(ent.getKey()).entrySet()) {
-                    sumLinks += ent2.getValue();
-                }
                 for (Entry<String, Double> ent2 : conceptGraph.get(ent.getKey()).entrySet()) {
                     if (oldValues.containsKey(ent2.getKey())) {
-                        newValue += (1 - lambda) * oldValues.get(ent2.getKey()).getfValue() * (ent2.getValue() / sumLinks);
+                        newValue += (1 - lambda) * oldValues.get(ent2.getKey()).getfValue() * (ent2.getValue() / propagationGraph.get(ent2.getKey()));
                     }
                 }
                 Feature f = new Feature(ent.getValue().getfName(), newValue, ent.getValue().getqId(), ent.getValue().getdId(), ent.getValue().getLabel());

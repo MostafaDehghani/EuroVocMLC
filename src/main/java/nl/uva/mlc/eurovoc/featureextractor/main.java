@@ -12,10 +12,13 @@ package nl.uva.mlc.eurovoc.featureextractor;
  */
 public class main {
     public static void main(String[] args) {
-//        RawFeatureCalculator rfc = new RawFeatureCalculator();
-//        rfc.main();
+        
+        RawFeatureCalculator rfc = new RawFeatureCalculator();
+        rfc.main();
         FeaturePropagator fp = new FeaturePropagator();
-        fp.main(); 
+        fp.main();
+        PropagationAnalyzer pa = new PropagationAnalyzer();
+        pa.main();
     }
     
 }
