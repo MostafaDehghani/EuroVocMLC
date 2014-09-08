@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.uva.mlc.eurovoc.featureextractor;
+package nl.uva.mlc.eurovoc.analyzer;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,6 +18,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.mlc.eurovoc.EuroVocDoc;
 import nl.uva.mlc.eurovoc.EuroVocParser;
+import nl.uva.mlc.eurovoc.featureextractor.Feature;
+import nl.uva.mlc.eurovoc.featureextractor.FeatureNormalizer;
+import nl.uva.mlc.eurovoc.featureextractor.FeaturePropagator;
+import nl.uva.mlc.eurovoc.featureextractor.FeaturesDefinition;
+import nl.uva.mlc.eurovoc.featureextractor.RawFeatureCalculator;
 import nl.uva.mlc.settings.Config;
 import static nl.uva.mlc.settings.Config.configFile;
 import org.apache.commons.io.FileUtils;

@@ -4,7 +4,13 @@
  * and open the template in the editor.
  */
 
-package nl.uva.mlc.eurovoc.featureextractor;
+package nl.uva.mlc.main;
+
+import nl.uva.mlc.eurovoc.analyzer.PropagationAnalyzer;
+import nl.uva.mlc.eurovoc.dataprocessor.CV_kFoldGenerator;
+import nl.uva.mlc.eurovoc.dataprocessor.DataSeperator;
+import nl.uva.mlc.eurovoc.featureextractor.FeaturePropagator;
+import nl.uva.mlc.eurovoc.featureextractor.RawFeatureCalculator;
 
 /**
  *
@@ -13,9 +19,12 @@ package nl.uva.mlc.eurovoc.featureextractor;
 public class main {
     public static void main(String[] args) {
         
-       //String choice = args[0];
-       String choice = "2";
-       if(choice.equals("1")){
+       String choice = args[0];
+       if(choice.equals("0")){
+        DataSeperator ds = new DataSeperator();
+        ds.main();
+       }
+       else if(choice.equals("1")){
         RawFeatureCalculator rfc = new RawFeatureCalculator();
         rfc.main();
        }
@@ -24,6 +33,10 @@ public class main {
         fp.main();
        }
        else if(choice.equals("3")){
+        CV_kFoldGenerator cvkfg = new CV_kFoldGenerator();
+        cvkfg.main();
+       }
+       else if(choice.equals("4")){
         PropagationAnalyzer pa = new PropagationAnalyzer();
         pa.main();
        }

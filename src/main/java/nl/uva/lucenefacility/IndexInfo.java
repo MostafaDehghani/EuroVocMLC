@@ -99,7 +99,7 @@ public class IndexInfo {
      * @param text
      * @return term frequency of given term over the given field
      */
-    private Long getTotalTF_PerField(String field, BytesRef text){
+    public Long getTotalTF_PerField(String field, BytesRef text){
         Long TF = 0L;
             Term term = new Term(field, text);
             try {

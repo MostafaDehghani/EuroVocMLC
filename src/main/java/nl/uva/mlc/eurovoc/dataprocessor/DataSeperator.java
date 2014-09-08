@@ -19,10 +19,21 @@ import org.apache.commons.io.FileUtils;
  * @author admin
  */
 public class DataSeperator {
-    
-        int conceptPerc = (int)(16730 * 0.7);
-        public static int fileCount = 0;
-        public void fileReader(File mainFile, String ConceptDir, String TrainDir) throws IOException {
+        
+        static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DataSeperator.class.getName());
+        private String conceptDir = configFile.getProperty("CORPUS_Con_PATH");
+        private String evalDir = configFile.getProperty("CORPUS_Eval_PATH");
+        private String maindocPath = configFile.getProperty("MAIN_DOC_PATH");
+        private Double conceptPercentage = Double.parseDouble(configFile.getProperty("CONCEPT_PERCENTAGE"))/100;
+        private Integer conceptPerc;
+        public int fileCount = 0;
+
+        public DataSeperator() {
+            File f = new File(maindocPath);
+            conceptPerc = (int)(f.listFiles().length * conceptPercentage);
+        }
+        
+        public void Seperator(File mainFile, String ConceptDir, String TrainDir){
         File[] files = mainFile.listFiles();
         for(File folder:files){
             if(folder.isDirectory())
@@ -34,12 +45,20 @@ public class DataSeperator {
                         if(fileCount <= conceptPerc)
                         {
                             File f = new File(ConceptDir + "/" + file.getName());
-                            Files.copy(file.toPath(), f.toPath(), REPLACE_EXISTING);
+                            try {
+                                Files.copy(file.toPath(), f.toPath(), REPLACE_EXISTING);
+                            } catch (IOException ex) {
+                                log.error(ex);
+                            }
                         }
                         else
                         {
                             File f = new File(TrainDir + "/" + file.getName());
-                            Files.copy(file.toPath(), f.toPath(), REPLACE_EXISTING);
+                            try {
+                                Files.copy(file.toPath(), f.toPath(), REPLACE_EXISTING);
+                            } catch (IOException ex) {
+                               log.error(ex);
+                            }
                         }
                         fileCount ++;
                     }
@@ -52,12 +71,20 @@ public class DataSeperator {
                         if(fileCount <= conceptPerc)
                         {
                             File f = new File(ConceptDir + "/" + folder.getName());
-                            Files.copy(folder.toPath(), f.toPath(), REPLACE_EXISTING);
+                            try {
+                                Files.copy(folder.toPath(), f.toPath(), REPLACE_EXISTING);
+                            } catch (IOException ex) {
+                               log.error(ex);
+                            }
                         }
                         else
                         {
                             File f = new File(TrainDir + "/" + folder.getName());
-                            Files.copy(folder.toPath(), f.toPath(), REPLACE_EXISTING);
+                            try {
+                                Files.copy(folder.toPath(), f.toPath(), REPLACE_EXISTING);
+                            } catch (IOException ex) {
+                               log.error(ex);
+                            }
                         }
                         fileCount ++;
                     }
@@ -68,49 +95,45 @@ public class DataSeperator {
         
     }
         
-    public void foldCreator(int k, String inDir, String outDir) throws IOException
-    {
-        File out = new File(outDir);
-//        out.createNewFile();
-        FileUtils.forceMkdir(out);
-        File in = new File(inDir);
-        File[] inFiles = in.listFiles();
-        int inNumFiles = inFiles.length;
-        int numFilesPerFold = inNumFiles / k;
-        for(int i = 0; i < k; i++)
-        {
-            File fold = new File(outDir + "/fold" + i + "/test");
-//            fold.mkdir();
-            FileUtils.forceMkdir(fold);
-            for(int j = i * numFilesPerFold; j < (i + 1) * numFilesPerFold; j++)
-            {
-                if(inFiles[j].getName().startsWith("jrc")&& inFiles[j].getName().endsWith(".xml")){
-                    File f = new File(fold.getAbsoluteFile() + "/" + inFiles[j].getName());
-                    Files.copy(inFiles[j].toPath(), f.toPath(), REPLACE_EXISTING);
-                }
-            }
-            File foldTrain = new File(outDir + "/fold" + i + "/train");
-            FileUtils.forceMkdir(foldTrain);
-            for(int j = 0; j < inFiles.length; j++)
-            {
-                if(j < i * numFilesPerFold || j >= (i + 1) * numFilesPerFold)
+    public void foldCreator(int k, String inDir, String outDir){
+            try {
+                File out = new File(outDir);
+                FileUtils.forceMkdir(out);
+                File in = new File(inDir);
+                File[] inFiles = in.listFiles();
+                int inNumFiles = inFiles.length;
+                int numFilesPerFold = inNumFiles / k;
+                for(int i = 0; i < k; i++)
                 {
-                    if(inFiles[j].getName().startsWith("jrc")&& inFiles[j].getName().endsWith(".xml")){
-                        File f = new File(foldTrain.getAbsoluteFile() + "/" + inFiles[j].getName());
-                        Files.copy(inFiles[j].toPath(), f.toPath(), REPLACE_EXISTING);
+                    File fold = new File(outDir + "/fold" + i + "/test");
+                    FileUtils.forceMkdir(fold);
+                    for(int j = i * numFilesPerFold; j < (i + 1) * numFilesPerFold; j++)
+                    {
+                        if(inFiles[j].getName().startsWith("jrc")&& inFiles[j].getName().endsWith(".xml")){
+                            File f = new File(fold.getAbsoluteFile() + "/" + inFiles[j].getName());
+                            Files.copy(inFiles[j].toPath(), f.toPath(), REPLACE_EXISTING);
+                        }
                     }
+                    File foldTrain = new File(outDir + "/fold" + i + "/train");
+                    FileUtils.forceMkdir(foldTrain);
+                    for(int j = 0; j < inFiles.length; j++)
+                    {
+                        if(j < i * numFilesPerFold || j >= (i + 1) * numFilesPerFold)
+                        {
+                            if(inFiles[j].getName().startsWith("jrc")&& inFiles[j].getName().endsWith(".xml")){
+                                File f = new File(foldTrain.getAbsoluteFile() + "/" + inFiles[j].getName());
+                                Files.copy(inFiles[j].toPath(), f.toPath(), REPLACE_EXISTING);
+                            }
+                        }
+                    }
+                    
+                }   } catch (IOException ex) {
+                    log.error(ex);
                 }
-            }
-            
-        }
     }
-    public static void main(String[] args) throws IOException {
-        String ConceptDir = configFile.getProperty("CORPUS_Con_PATH");
-        String TrainDir = configFile.getProperty("CORPUS_Eval_PATH");
-//        String FoldsDir = "/Users/admin/Desktop/five_year/data/folds";
-        DataSeperator ds = new DataSeperator();
-        ds.fileReader(new File(configFile.getProperty("MAIN_DOC_PATH")), ConceptDir, TrainDir);
-//        ds.foldCreator(5, TrainDir, FoldsDir);
+    public void main(){
+        
+        this.Seperator(new File(this.maindocPath), this.conceptDir, this.evalDir);
     }
     
 }

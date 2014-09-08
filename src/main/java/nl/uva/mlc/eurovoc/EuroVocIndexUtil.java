@@ -17,7 +17,7 @@ import org.apache.lucene.store.SimpleFSDirectory;
 
 public class EuroVocIndexUtil {
         
-        org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(EuroVocDoc.class.getName());
+        static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(EuroVocDoc.class.getName());
         private HashMap<String, Integer> indexId = null;
         private IndexReader ireader = null;
 
