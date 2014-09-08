@@ -328,8 +328,9 @@ public class RawFeatureCalculator extends EuroVocParser {
                         ent.getValue().put(fnum, new Feature(qName, 0D, qName, docId, lbl));
                     }
                 }
+                Integer fId=0;
                 for(Map.Entry<Integer,Feature> ent2: ent.getValue().entrySet()){
-                                tmpLine += ent2.getKey() + ":" + ent2.getValue().getfValue().toString() + " ";
+                        tmpLine += (++fId) + ":" + ent2.getValue().getfValue().toString() + " ";
                 }
                 String line =  lbl+ " "
                             + "qid:" + qId + " "

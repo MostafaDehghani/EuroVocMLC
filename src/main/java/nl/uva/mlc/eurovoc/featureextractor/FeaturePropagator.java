@@ -234,6 +234,7 @@ public class FeaturePropagator {
                 String docId = "";
                 String qName = "";
                 String tmpLine = "";
+//                Integer fId=0;
                 for(Entry<Integer,Feature> ent3: ent2.getValue().entrySet()){
                                 lbl = ent3.getValue().getLabel();
                                 docId = ent3.getValue().getdId();

@@ -150,11 +150,6 @@ public class PropagationAnalyzer extends EuroVocParser {
         this.fileReader(new File(queriesPath));
     }
 
-    public static void main(String[] args) {
-        PropagationAnalyzer pa = new PropagationAnalyzer();
-        pa.main();
-    }
-
 }
 
 class ValueComparator implements Comparator<String> {
