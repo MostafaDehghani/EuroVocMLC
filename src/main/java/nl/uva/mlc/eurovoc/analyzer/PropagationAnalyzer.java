@@ -62,19 +62,11 @@ public class PropagationAnalyzer extends EuroVocParser {
         this.fn = new FeatureNormalizer();
 
         //Cleaning
-        File resDir = new File(configFile.getProperty("ANALYSIS_PATH"));
-        if (resDir.exists()) {
-            try {
-                FileUtils.deleteDirectory(resDir);
-                log.info("Deletting the existing directory on: " + configFile.getProperty("ANALYSIS_PATH"));
-            } catch (IOException ex) {
-                log.error(ex);
-            }
-        }
-        resDir.mkdirs();
         File f = new File(Config.configFile.getProperty("ANALYSIS_PATH")
                 + "/all_folds_F-" + this.fNum + ".txt");
         try {
+            if(f.exists())
+                    f.delete();
             f.createNewFile();
         } catch (IOException ex) {
             log.error(ex);
@@ -85,6 +77,8 @@ public class PropagationAnalyzer extends EuroVocParser {
                         + "/all_folds_F-" + this.fNum + "_Lmbda-" + lambda
                         + "_itNum-" + itNum + ".txt";
                 f = new File(fileName);
+                if(f.exists())
+                    f.delete();
                 try {
                     f.createNewFile();
                 } catch (IOException ex) {
@@ -92,6 +86,8 @@ public class PropagationAnalyzer extends EuroVocParser {
                 }
             }
         }
+        log.info("Deletting the existing files on: " + configFile.getProperty("ANALYSIS_PATH"));
+            
 
     }
 

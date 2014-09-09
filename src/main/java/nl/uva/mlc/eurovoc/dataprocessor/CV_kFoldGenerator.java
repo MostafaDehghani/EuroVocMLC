@@ -80,6 +80,9 @@ public class CV_kFoldGenerator {
             log.error(ex);
         }
     }
-    public void main() {
+    public void main(String InputFeatureFile, String outDir, Integer k) {
+        if(k!=null)
+            this.k = k;
+        this.FoldCreator(InputFeatureFile, outDir);
     }
 }

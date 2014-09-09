@@ -132,7 +132,6 @@ public class DataSeperator {
                 }
     }
     public void main(){
-        
         this.Seperator(new File(this.maindocPath), this.conceptDir, this.evalDir);
     }
     

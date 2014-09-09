@@ -34,7 +34,7 @@ public class main {
        }
        else if(choice.equals("3")){
         CV_kFoldGenerator cvkfg = new CV_kFoldGenerator();
-        cvkfg.main();
+        cvkfg.main(args[1],args[2],Integer.parseInt(args[3]));
        }
        else if(choice.equals("4")){
         PropagationAnalyzer pa = new PropagationAnalyzer();
