@@ -15,8 +15,6 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.Map.Entry;
 import nl.uva.mlc.settings.Config;
-import static nl.uva.mlc.settings.Config.configFile;
-import org.apache.commons.io.FileUtils;
 
 /**
  *
@@ -27,6 +25,7 @@ public class FeaturePropagator {
     HashSet<Integer> propagationBlackList = null;
     Integer numIteration = Integer.parseInt(Config.configFile.getProperty("ITERATION_NUM"));
     Double lambda = Double.parseDouble(Config.configFile.getProperty("LAMBDA"));
+    String graphFilePath = Config.configFile.getProperty("CONCEPT_GRAPH_FILE_PATH");
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FeaturePropagator.class.getName());
     public Map<String, Map<String, Double>> conceptGraph = new HashMap<String, Map<String, Double>>();
     public Map<String, Double> propagationGraph = new HashMap<String, Double>();
@@ -41,14 +40,10 @@ public class FeaturePropagator {
     }
 
     
-    public FeaturePropagator(){
-        features = new TreeMap<Integer, HashMap<String, HashMap<String, Feature>>>();   
-     }
-    
-    public FeaturePropagator(String graphPath) {
+    public FeaturePropagator() {
         features = new TreeMap<Integer, HashMap<String, HashMap<String, Feature>>>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File(graphPath)));
+            BufferedReader br = new BufferedReader(new FileReader(new File(this.graphFilePath)));
             String str = "";
             while ((str = br.readLine()) != null) {
                 String[] parts = str.split("\t");
@@ -145,22 +140,21 @@ public class FeaturePropagator {
         return FinalFeatures;
     }
 
-    public void readRawFeaturesAndPropagation() {
+    public void readRawFeaturesAndPropagation(String rawFeatureFilePath) {
         BufferedReader br = null;
+        File inFile = new File(rawFeatureFilePath);
+        String outFilePath= Config.configFile.getProperty("FEATURE_PROPAGATED_K-FOLD_PATH")+"Propagated_" + inFile.getName();
         //
         try {
-            File resDir = new File(configFile.getProperty("FEATURE_PROPAGATED_K-FOLD_PATH"));
-            if (resDir.exists()) {
-                    FileUtils.deleteDirectory(resDir);
-                    log.info("Deletting the existing directory on: " + configFile.getProperty("FEATURE_PROPAGATED_K-FOLD_PATH"));
+            File file = new File(outFilePath);
+            if(file.exists()){
+                log.info("Deletting the existing directory on: " + outFilePath);
+                file.delete();
             }
-            resDir.mkdirs();
-            File file = new File(Config.configFile.getProperty("FEATURE_PROPAGATED_K-FOLD_PATH")+"/all_folds.txt");
             file.createNewFile();
             //
             TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> feature = new TreeMap<>();
-            String Kfold_path = Config.configFile.getProperty("FEATURE_K-FOLD_PATH") + "/all_folds.txt";
-            br = new BufferedReader(new FileReader(new File(Kfold_path)));
+            br = new BufferedReader(new FileReader(new File(rawFeatureFilePath)));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] lineParts1 = line.split(" # ");
@@ -184,7 +178,7 @@ public class FeaturePropagator {
                             oneQ_allD = new HashMap<String, Feature>();
                             //
 //                            this.addFeatures(this.propagateAndConcatFeatures(feature));
-                            this.addFeature2File(this.propagateAndConcatFeatures(feature));
+                            this.addFeature2File(this.propagateAndConcatFeatures(feature),outFilePath);
                             log.info("All features of query " + qId + " are propagated...");
                             feature = new TreeMap<>();
                             allq_AllD_oneF = new HashMap<>();
@@ -196,7 +190,7 @@ public class FeaturePropagator {
                     feature.put(fNum, allq_AllD_oneF);
                 }
             }
-            this.addFeature2File(this.propagateAndConcatFeatures(feature));
+            this.addFeature2File(this.propagateAndConcatFeatures(feature),outFilePath);
             log.info("Feature propagation is completed successfully for all queries");
             feature = new TreeMap<>();
             //
@@ -208,7 +202,7 @@ public class FeaturePropagator {
         }        
     }
 
-    private void addFeature2File(TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> f){
+    private void addFeature2File(TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> f, String outFileName){
         TreeMap<String,HashMap<String, TreeMap<Integer,Feature>>> lines = new TreeMap<>();
         Set<String> qIds =  f.firstEntry().getValue().keySet();
         
@@ -227,7 +221,7 @@ public class FeaturePropagator {
             lines.put(q, docs);
         }
         try{
-        PrintWriter pw = new PrintWriter(new FileWriter(Config.configFile.getProperty("FEATURE_PROPAGATED_K-FOLD_PATH")+"/all_folds.txt",true));
+        PrintWriter pw = new PrintWriter(new FileWriter(outFileName ,true));
         for(Entry<String,HashMap<String, TreeMap<Integer,Feature>>> ent: lines.entrySet()){
             for(Entry<String, TreeMap<Integer,Feature>> ent2: ent.getValue().entrySet()){
                 String lbl = "";
@@ -256,10 +250,7 @@ public class FeaturePropagator {
             log.error(ex);
         }
     }
-    public void main() {
-        String graphFilePath = Config.configFile.getProperty("CONCEPT_GRAPH_FILE_PATH");
-        FeaturePropagator fp = new FeaturePropagator(graphFilePath);
-        fp.readRawFeaturesAndPropagation();
-        
+    public void main(String rowFeaturePath) {
+        this.readRawFeaturesAndPropagation(rowFeaturePath);
     }
 }

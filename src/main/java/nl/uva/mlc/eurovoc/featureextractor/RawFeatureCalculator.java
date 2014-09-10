@@ -37,22 +37,22 @@ public class RawFeatureCalculator extends EuroVocParser {
 
     public RawFeatureCalculator() {
         
-        File resDir = new File(configFile.getProperty("FEATURE_K-FOLD_PATH"));
-        if (resDir.exists()) {
-            try {
-                FileUtils.deleteDirectory(resDir);
-                resDir.mkdirs();
-                File file = new File(Config.configFile.getProperty("FEATURE_K-FOLD_PATH")+"/all_folds.txt");
-                file.createNewFile();
-            } catch (IOException ex) {
-                    log.info("Deletting the existing directory on: " + configFile.getProperty("FEATURE_K-FOLD_PATH"));
-            }
-        }
         this.featureNumbers = new ArrayList<>();
         for(String s: Config.configFile.getProperty("FEATURE_NUMBERS").split(",")){
             this.featureNumbers.add(Integer.parseInt(s.trim()));
         }
         log.info("features to be calculated: " + this.featureNumbers.toString());
+          try {
+            File file = new File(Config.configFile.getProperty("FEATURE_K-FOLD_PATH") + "/all_folds_" + this.featureNumbers.toString() + ".txt");
+            if (file.exists()) {
+                file.delete();
+                log.info("Deletting the existing directory on: " + configFile.getProperty("FEATURE_K-FOLD_PATH"));
+            }
+           file.createNewFile();
+        } catch (IOException ex) {
+            log.error(ex);
+        }
+
     }
 
     
@@ -328,7 +328,7 @@ public class RawFeatureCalculator extends EuroVocParser {
             }
         }
         try{
-        PrintWriter pw = new PrintWriter(new FileWriter(Config.configFile.getProperty("FEATURE_K-FOLD_PATH")+"/all_folds.txt",true));
+        PrintWriter pw = new PrintWriter(new FileWriter(Config.configFile.getProperty("FEATURE_K-FOLD_PATH")+"/all_folds_"+this.featureNumbers.toString() +".txt",true));
         for(Map.Entry<String, TreeMap<Integer,Feature>> ent: docs.entrySet()){
 
                 String lbl = (docAsQuery.getClasses().contains(ent.getKey()))? "1" : "0";

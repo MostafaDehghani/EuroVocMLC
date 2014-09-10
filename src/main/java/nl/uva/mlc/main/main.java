@@ -27,8 +27,8 @@ public class main {
                    + "\n 0:data seperation"
                    + "\n 1:Indesing"
                    + "\n 2:Raw feature claculating"
-                   + "\n 3:Propagating"
-                   + "\n 4:Kfold  generating -> akong with the all_folds.txt kFoldDir and k"
+                   + "\n 3:Propagating  -> alongs with the all_folds"
+                   + "\n 4:Kfold  generating -> alongs with the all_folds kFoldDir and k"
                    + "\n 5:Analysing");
            return;
        }
@@ -49,7 +49,7 @@ public class main {
        }
        else if(choice.equals("3")){
         FeaturePropagator fp = new FeaturePropagator();
-        fp.main();
+        fp.main(args[1]);
         log.info("freature propagation is finished...");
        }
        else if(choice.equals("4")){

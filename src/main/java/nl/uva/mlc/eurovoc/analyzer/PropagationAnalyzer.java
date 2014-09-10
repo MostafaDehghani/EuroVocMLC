@@ -48,7 +48,6 @@ public class PropagationAnalyzer extends EuroVocParser {
     private FeaturePropagator fp = null;
 
     public PropagationAnalyzer() {
-        String graphFilePath = Config.configFile.getProperty("CONCEPT_GRAPH_FILE_PATH");
         this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
         try {
             this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
@@ -58,7 +57,7 @@ public class PropagationAnalyzer extends EuroVocParser {
         this.fd = new FeaturesDefinition(ireader);
         this.rfc = new RawFeatureCalculator();
         this.rfc.setFd(this.fd);
-        this.fp = new FeaturePropagator(graphFilePath);
+        this.fp = new FeaturePropagator();
         this.fn = new FeatureNormalizer();
 
         //Cleaning

@@ -1,2 +1,4 @@
 /target/
 log.out
+.DS_Store
+nbactions.xml
