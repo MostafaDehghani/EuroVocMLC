@@ -52,6 +52,9 @@
                                 nl.uva.mlc.main.main
                             </mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Class-Path>.</Class-Path>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -72,6 +75,11 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <targetPath>${basedir}/target</targetPath>
+                <includes>
+                    <include>log4j.properties</include>
+                    <include>Config.prperties</include>
+                </includes>
             </resource>
         </resources>
     </build>
