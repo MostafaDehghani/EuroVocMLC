@@ -358,7 +358,6 @@ public class RawFeatureCalculator extends EuroVocParser {
             log.error(ex);
         }    }
      public void main(){
-        RawFeatureCalculator rfc = new RawFeatureCalculator();
-        rfc.conceptBaseFeatureCalc();
+        this.conceptBaseFeatureCalc();
     }
 }
