@@ -12,6 +12,7 @@ import nl.uva.mlc.eurovoc.dataprocessor.DataSeperator;
 import nl.uva.mlc.eurovoc.featureextractor.FeaturePropagator;
 import nl.uva.mlc.eurovoc.featureextractor.RawFeatureCalculator;
 import nl.uva.mlc.eurovoc.irengine.Indexer;
+import nl.uva.mlc.learning.TrecEvalInputProvider;
 
 /**
  *
@@ -27,9 +28,10 @@ public class main {
                    + "\n 0:data seperation"
                    + "\n 1:Indesing"
                    + "\n 2:Raw feature claculating"
-                   + "\n 3:Propagating  -> alongs with the all_folds"
-                   + "\n 4:Kfold  generating -> alongs with the all_folds kFoldDir and k"
-                   + "\n 5:Analysing");
+                   + "\n 3:Propagating  -> param alongs with the all_folds"
+                   + "\n 4:Kfold  generating -> param alongs with the all_folds kFoldDir and k"
+                   + "\n 5:Analysing"
+                   + "\n 6:TrecEval data Provider -> param alongs with textfile, scoresFile, resultFile, judgeFile");
            return;
        }
        String choice = args[0];
@@ -61,6 +63,11 @@ public class main {
         PropagationAnalyzer pa = new PropagationAnalyzer();
         pa.main();
         log.info("Analysing is finished...");
+       }
+       else if(choice.equals("6")){
+           TrecEvalInputProvider teip = new TrecEvalInputProvider();
+           teip.main(args[1], args[1], args[1], args[1]);
+           log.info("Input data for treceval are provided...");
        }
        else{
            log.info("The parameter should be set correctly...");

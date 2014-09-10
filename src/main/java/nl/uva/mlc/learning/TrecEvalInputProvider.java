@@ -19,10 +19,10 @@ import java.util.Comparator;
  *
  * @author mosi
  */
-public class Test {
+public class TrecEvalInputProvider {
     
-    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Test.class.getName());
-    public void trecEvalInputProvider(String testPath, String scorePath, String resultPath, String judgePath){
+    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TrecEvalInputProvider.class.getName());
+    public void teInputProvider(String testPath, String scorePath, String resultPath, String judgePath){
         ArrayList<resInstance>  res= new ArrayList<>();
         try {
             BufferedReader testBR = new  BufferedReader(new FileReader(new File(testPath)));
@@ -60,9 +60,8 @@ public class Test {
         }
     }  
     
-    public static void main(String[] args) {
-        Test t = new Test();
-        t.trecEvalInputProvider("/Users/Mosi/Desktop/svmrank/all_folds.txt","/Users/Mosi/Desktop/svmrank/score.txt", "/Users/Mosi/Desktop/svmrank/res.txt", "/Users/Mosi/Desktop/svmrank/judge.txt");
+    public void main(String textfile, String scoresFile, String resultFile, String judgeFile) {
+        this.teInputProvider(textfile, scoresFile, resultFile, judgeFile);
     }
     
     
