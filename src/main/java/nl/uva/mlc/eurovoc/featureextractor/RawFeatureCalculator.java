@@ -41,6 +41,7 @@ public class RawFeatureCalculator extends EuroVocParser {
         for(String s: Config.configFile.getProperty("FEATURE_NUMBERS").split(",")){
             this.featureNumbers.add(Integer.parseInt(s.trim()));
         }
+        log.info("features to be calculated: " + this.featureNumbers.toString());
     }
 
     
