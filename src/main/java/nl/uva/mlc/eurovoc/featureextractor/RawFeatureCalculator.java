@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -29,11 +31,20 @@ import org.apache.lucene.store.SimpleFSDirectory;
 public class RawFeatureCalculator extends EuroVocParser {
 
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(RawFeatureCalculator.class.getName());
-    private Integer[] featureNumbers = null;
+    private ArrayList<Integer> featureNumbers = null;
     private FeaturesDefinition fd = null;
     private FeatureNormalizer fn = new FeatureNormalizer();
     private Integer qId=1;
 
+    public RawFeatureCalculator() {
+        this.featureNumbers = new ArrayList<>();
+        for(String s: Config.configFile.getProperty("FEATURE_NUMBERS").split(",")){
+            this.featureNumbers.add(Integer.parseInt(s.trim()));
+        }
+    }
+
+    
+        
     public void setFd(FeaturesDefinition fd) {
         this.fd = fd;
     }
@@ -279,8 +290,6 @@ public class RawFeatureCalculator extends EuroVocParser {
             resDir.mkdirs();
             File file = new File(Config.configFile.getProperty("FEATURE_K-FOLD_PATH")+"/all_folds.txt");
             file.createNewFile();
-            this.featureNumbers = new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-                                                22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39};
             String queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
             IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
             this.fd = new FeaturesDefinition(ireader);
@@ -292,7 +301,6 @@ public class RawFeatureCalculator extends EuroVocParser {
 
     public void docBaseFeatureCalc() {
         try {
-            featureNumbers = new Integer[]{1, 2, 3};
             String queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
             IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("DOC_INDEX_PATH"))));
             this.fd = new FeaturesDefinition(ireader);

@@ -381,9 +381,4 @@ public class Indexer extends EuroVocParser {
         }
         return CumDesc + unDescs.trim();
     }
-    
-    
-    public static void main(String[] args) throws ParserConfigurationException, SAXException, SQLException {
-        new Indexer();
-    }
 }
