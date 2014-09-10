@@ -74,8 +74,8 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <targetPath>${basedir}/target</targetPath>
+                <!--<filtering>true</filtering>-->
+                <!--<targetPath>${basedir}/target</targetPath>-->
                 <includes>
                     <include>Config.prperties</include>
                     <include>log4j.properties</include>
