@@ -1,0 +1,8 @@
+2014-09-10  INFO [main] (RawFeatureCalculator.java:43) - features to be calculated: [39]
+2014-09-10  INFO [main] (RawFeatureCalculator.java:43) - features to be calculated: [39]
+2014-09-10  INFO [main] (RawFeatureCalculator.java:288) - Deletting the existing directory on: /Users/Mosi/Desktop/MLC/data/EvaluationData/Feature_K_Fold/
+2014-09-10  INFO [main] (RawFeatureCalculator.java:72) - All features has been calculated for document jrc32006R0982-en
+2014-09-10  INFO [main] (RawFeatureCalculator.java:72) - All features has been calculated for document jrc32006R0983-en
+2014-09-10  INFO [main] (RawFeatureCalculator.java:72) - All features has been calculated for document jrc32006R0984-en
+2014-09-10  INFO [main] (RawFeatureCalculator.java:72) - All features has been calculated for document jrc32006R0985-en
+2014-09-10  INFO [main] (RawFeatureCalculator.java:72) - All features has been calculated for document jrc32006R0986-en

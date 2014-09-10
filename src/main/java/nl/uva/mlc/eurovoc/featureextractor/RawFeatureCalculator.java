@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -37,6 +36,18 @@ public class RawFeatureCalculator extends EuroVocParser {
     private Integer qId=1;
 
     public RawFeatureCalculator() {
+        
+        File resDir = new File(configFile.getProperty("FEATURE_K-FOLD_PATH"));
+        if (resDir.exists()) {
+            try {
+                FileUtils.deleteDirectory(resDir);
+                resDir.mkdirs();
+                File file = new File(Config.configFile.getProperty("FEATURE_K-FOLD_PATH")+"/all_folds.txt");
+                file.createNewFile();
+            } catch (IOException ex) {
+                    log.info("Deletting the existing directory on: " + configFile.getProperty("FEATURE_K-FOLD_PATH"));
+            }
+        }
         this.featureNumbers = new ArrayList<>();
         for(String s: Config.configFile.getProperty("FEATURE_NUMBERS").split(",")){
             this.featureNumbers.add(Integer.parseInt(s.trim()));
@@ -283,14 +294,6 @@ public class RawFeatureCalculator extends EuroVocParser {
     public void conceptBaseFeatureCalc() {
         
        try {
-            File resDir = new File(configFile.getProperty("FEATURE_K-FOLD_PATH"));
-            if (resDir.exists()) {
-                    FileUtils.deleteDirectory(resDir);
-                    log.info("Deletting the existing directory on: " + configFile.getProperty("FEATURE_K-FOLD_PATH"));
-            }
-            resDir.mkdirs();
-            File file = new File(Config.configFile.getProperty("FEATURE_K-FOLD_PATH")+"/all_folds.txt");
-            file.createNewFile();
             String queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
             IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
             this.fd = new FeaturesDefinition(ireader);

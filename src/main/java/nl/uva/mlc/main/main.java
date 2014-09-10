@@ -18,8 +18,20 @@ import nl.uva.mlc.eurovoc.irengine.Indexer;
  * @author mosi
  */
 public class main {
+    
+    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(main.class.getName());
     public static void main(String[] args) {
         
+       if(args == null){
+           log.info("The parameter should be set: "
+                   + "\n 0:data seperation"
+                   + "\n 1:Indesing"
+                   + "\n 2:Raw feature claculating"
+                   + "\n 3:Propagating"
+                   + "\n 4:Kfold  generating -> akong with the all_folds.txt kFoldDir and k"
+                   + "\n 5:Analysing");
+           return;
+       }
        String choice = args[0];
        if(choice.equals("0")){
         DataSeperator ds = new DataSeperator();
@@ -43,6 +55,9 @@ public class main {
        else if(choice.equals("5")){
         PropagationAnalyzer pa = new PropagationAnalyzer();
         pa.main();
+       }
+       else{
+           log.info("The parameter should be set correctly...");
        }
     }
     
