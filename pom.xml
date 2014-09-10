@@ -72,10 +72,6 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
-                <targetPath>${basedir}/target</targetPath>
-                <includes>
-                <include>Config.properties</include>
-                </includes>
             </resource>
         </resources>
     </build>
