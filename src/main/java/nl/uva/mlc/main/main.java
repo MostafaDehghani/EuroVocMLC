@@ -32,7 +32,7 @@ public class main {
                    + "\n 5:Analysing");
            return;
        }
-       String choice = "0";
+       String choice = args[0];
        if(choice.equals("0")){
         DataSeperator ds = new DataSeperator();
         ds.main();
