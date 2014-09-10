@@ -77,8 +77,8 @@
                 <filtering>true</filtering>
                 <targetPath>${basedir}/target</targetPath>
                 <includes>
-                    <include>log4j.properties</include>
                     <include>Config.prperties</include>
+                    <include>log4j.properties</include>
                 </includes>
             </resource>
         </resources>
