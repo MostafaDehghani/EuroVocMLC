@@ -50,6 +50,7 @@ public class PropagationAnalyzer extends EuroVocParser {
     public PropagationAnalyzer() {
         
         this.fNum = Integer.parseInt(configFile.getProperty("FEATURE_NUM_FOR_ANALYSIS"));
+        log.info("Feature for analyze:" + this.fNum);
         this.itNums = new ArrayList<Integer>();
         for(String s: Config.configFile.getProperty("ITERATION_NUMS").split(",")){
             this.itNums.add(Integer.parseInt(s.trim()));
@@ -57,13 +58,15 @@ public class PropagationAnalyzer extends EuroVocParser {
         this.lambdas = new ArrayList<Double>();
         for(String s: Config.configFile.getProperty("LAMBDAS").split(",")){
             this.lambdas.add(Double.parseDouble(s.trim()));
-        }        
+        }     
+        log.info("Lambdas for analyze:" + this.lambdas.toString());
         this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
         try {
             this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
         } catch (IOException ex) {
             log.error(ex);
         }
+        log.info("Iteration numbers for analyze:" + this.itNums.toString());
         this.fd = new FeaturesDefinition(ireader);
         this.rfc = new RawFeatureCalculator();
         this.rfc.setFd(this.fd);
@@ -74,8 +77,10 @@ public class PropagationAnalyzer extends EuroVocParser {
         File f = new File(Config.configFile.getProperty("ANALYSIS_PATH")
                 + "/all_folds_F-" + this.fNum + ".txt");
         try {
-            if(f.exists())
+            if(f.exists()){
                     f.delete();
+                    log.info("Deletting the existing files on: " + f.getPath());
+            }
             f.createNewFile();
         } catch (IOException ex) {
             log.error(ex);
@@ -86,8 +91,10 @@ public class PropagationAnalyzer extends EuroVocParser {
                         + "/all_folds_F-" + this.fNum + "_Lmbda-" + lambda
                         + "_itNum-" + itNum + ".txt";
                 f = new File(fileName);
-                if(f.exists())
+                if(f.exists()){
                     f.delete();
+                    log.info("Deletting the existing files on: " + f.getPath());
+                }
                 try {
                     f.createNewFile();
                 } catch (IOException ex) {
@@ -95,10 +102,7 @@ public class PropagationAnalyzer extends EuroVocParser {
                 }
             }
         }
-        log.info("Deletting the existing files on: " + configFile.getProperty("ANALYSIS_PATH"));
-            
-
-    }
+     }
 
     @Override
     public void doSomeAction(EuroVocDoc docAsQuery) {

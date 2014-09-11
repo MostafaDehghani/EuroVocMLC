@@ -23,7 +23,7 @@ public class main {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(main.class.getName());
     public static void main(String[] args) {
         
-       if(args == null){
+       if(args.length <1){
            log.info("The parameter should be set: "
                    + "\n 0:data seperation"
                    + "\n 1:Indesing"
