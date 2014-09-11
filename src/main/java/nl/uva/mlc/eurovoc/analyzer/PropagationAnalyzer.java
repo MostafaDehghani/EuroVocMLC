@@ -49,8 +49,7 @@ public class PropagationAnalyzer extends EuroVocParser {
 
     public PropagationAnalyzer() {
         
-        String tmp = configFile.getProperty("FEATURE_NUM_FOR_ANALYSIS");
-        this.fNum = Integer.parseInt(tmp);
+        this.fNum = Integer.parseInt(configFile.getProperty("FEATURE_NUM_FOR_ANALYSIS"));
         this.itNums = new ArrayList<Integer>();
         for(String s: Config.configFile.getProperty("ITERATION_NUMS").split(",")){
             this.itNums.add(Integer.parseInt(s.trim()));
