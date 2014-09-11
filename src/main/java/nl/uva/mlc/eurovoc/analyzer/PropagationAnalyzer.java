@@ -77,8 +77,10 @@ public class PropagationAnalyzer extends EuroVocParser {
         this.fn = new FeatureNormalizer();
 
         //Cleaning
-        File f = new File(Config.configFile.getProperty("ANALYSIS_PATH")
-                + "/all_folds_F-" + this.fNum + ".txt");
+        File f;
+        for (int fnum : this.fNum) {
+        f = new File(Config.configFile.getProperty("ANALYSIS_PATH")
+                + "/all_folds_F-" + fnum + ".txt");
         try {
             if (f.exists()) {
                 f.delete();
@@ -87,6 +89,7 @@ public class PropagationAnalyzer extends EuroVocParser {
             f.createNewFile();
         } catch (IOException ex) {
             log.error(ex);
+        }
         }
         for (int fnum : this.fNum) {
             for (int itNum : itNums) {
@@ -123,7 +126,7 @@ public class PropagationAnalyzer extends EuroVocParser {
             for (int itNum : itNums) {
                 for (double alpha : alphas) {
                     String fileName = Config.configFile.getProperty("ANALYSIS_PATH")
-                            + "/all_folds_F-" + this.fNum + "_Alpha-" + alpha
+                            + "/all_folds_F-" + fnum + "_Alpha-" + alpha
                             + "_itNum-" + itNum + ".txt";
                     fp.setAlpha(alpha);
                     fp.setNumIteration(itNum);
