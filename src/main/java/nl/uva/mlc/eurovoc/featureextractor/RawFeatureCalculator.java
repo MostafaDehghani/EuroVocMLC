@@ -36,7 +36,11 @@ public class RawFeatureCalculator extends EuroVocParser {
     private Integer qId=1;
 
     public RawFeatureCalculator() {
-        
+
+    }
+
+    private void Init(){
+                
         this.featureNumbers = new ArrayList<>();
         for(String s: Config.configFile.getProperty("FEATURE_NUMBERS").split(",")){
             this.featureNumbers.add(Integer.parseInt(s.trim()));
@@ -52,10 +56,7 @@ public class RawFeatureCalculator extends EuroVocParser {
         } catch (IOException ex) {
             log.error(ex);
         }
-
     }
-
-    
         
     public void setFd(FeaturesDefinition fd) {
         this.fd = fd;
@@ -292,7 +293,7 @@ public class RawFeatureCalculator extends EuroVocParser {
     }
 
     public void conceptBaseFeatureCalc() {
-        
+       
        try {
             String queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
             IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
@@ -358,6 +359,7 @@ public class RawFeatureCalculator extends EuroVocParser {
             log.error(ex);
         }    }
      public void main(){
+        this.Init();
         this.conceptBaseFeatureCalc();
     }
 }
