@@ -36,7 +36,7 @@ import org.apache.lucene.store.SimpleFSDirectory;
 public class PropagationAnalyzer extends EuroVocParser {
 
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PropagationAnalyzer.class.getName());
-    private Integer fNum = null;
+    private ArrayList<Integer> fNum = null;
     private ArrayList<Integer> itNums = null;
     private ArrayList<Double> lambdas = null;
 
@@ -48,17 +48,21 @@ public class PropagationAnalyzer extends EuroVocParser {
     private FeaturePropagator fp = null;
 
     public PropagationAnalyzer() {
-        
-        this.fNum = Integer.parseInt(configFile.getProperty("FEATURE_NUM_FOR_ANALYSIS"));
-        log.info("Feature for analyze:" + this.fNum);
+
+        this.fNum = new ArrayList<Integer>();
+        for (String s : Config.configFile.getProperty("FEATURE_NUM_FOR_ANALYSIS").split(",")) {
+            this.fNum.add(Integer.parseInt(s.trim()));
+        }
+        log.info("Feature for analyze:" + this.fNum.toString());
         this.itNums = new ArrayList<Integer>();
-        for(String s: Config.configFile.getProperty("ITERATION_NUMS").split(",")){
+        for (String s : Config.configFile.getProperty("ITERATION_NUMS").split(",")) {
             this.itNums.add(Integer.parseInt(s.trim()));
         }
+        log.info("Iteration numbers for analyze:" + this.itNums.toString());
         this.lambdas = new ArrayList<Double>();
-        for(String s: Config.configFile.getProperty("LAMBDAS").split(",")){
+        for (String s : Config.configFile.getProperty("LAMBDAS").split(",")) {
             this.lambdas.add(Double.parseDouble(s.trim()));
-        }     
+        }
         log.info("Lambdas for analyze:" + this.lambdas.toString());
         this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
         try {
@@ -66,7 +70,6 @@ public class PropagationAnalyzer extends EuroVocParser {
         } catch (IOException ex) {
             log.error(ex);
         }
-        log.info("Iteration numbers for analyze:" + this.itNums.toString());
         this.fd = new FeaturesDefinition(ireader);
         this.rfc = new RawFeatureCalculator();
         this.rfc.setFd(this.fd);
@@ -77,9 +80,9 @@ public class PropagationAnalyzer extends EuroVocParser {
         File f = new File(Config.configFile.getProperty("ANALYSIS_PATH")
                 + "/all_folds_F-" + this.fNum + ".txt");
         try {
-            if(f.exists()){
-                    f.delete();
-                    log.info("Deletting the existing files on: " + f.getPath());
+            if (f.exists()) {
+                f.delete();
+                log.info("Deletting the existing files on: " + f.getPath());
             }
             f.createNewFile();
         } catch (IOException ex) {
@@ -91,7 +94,7 @@ public class PropagationAnalyzer extends EuroVocParser {
                         + "/all_folds_F-" + this.fNum + "_Lmbda-" + lambda
                         + "_itNum-" + itNum + ".txt";
                 f = new File(fileName);
-                if(f.exists()){
+                if (f.exists()) {
                     f.delete();
                     log.info("Deletting the existing files on: " + f.getPath());
                 }
@@ -102,27 +105,29 @@ public class PropagationAnalyzer extends EuroVocParser {
                 }
             }
         }
-     }
+    }
 
     @Override
     public void doSomeAction(EuroVocDoc docAsQuery) {
         addQueryToJudgmentFile(docAsQuery);
-        HashMap<String, Feature> oneQ_allD = new HashMap<String, Feature>();
-        oneQ_allD = rfc.calculateFeatures(docAsQuery, this.fNum);
-        HashMap<String, Feature> oneQ_allD_Normalized = this.fn.normalize(oneQ_allD);
-        String raw_fileName = Config.configFile.getProperty("ANALYSIS_PATH")
-                + "/all_folds_F-" + this.fNum + ".txt";
-        addQueryToResultsFile(docAsQuery, oneQ_allD_Normalized, raw_fileName);
 
-        for (int itNum : itNums) {
-            for (double lambda : lambdas) {
-                String fileName = Config.configFile.getProperty("ANALYSIS_PATH")
-                        + "/all_folds_F-" + this.fNum + "_Lmbda-" + lambda
-                        + "_itNum-" + itNum + ".txt";
-                fp.setLambda(lambda);
-                fp.setNumIteration(itNum);
-                HashMap<String, Feature> oneQ_allD_propagated = this.fp.propagator(oneQ_allD_Normalized);
-                addQueryToResultsFile(docAsQuery, oneQ_allD_propagated, fileName);
+        for (int fnum : this.fNum) {
+            HashMap<String, Feature> oneQ_allD = new HashMap<String, Feature>();
+            oneQ_allD = rfc.calculateFeatures(docAsQuery, fnum);
+            HashMap<String, Feature> oneQ_allD_Normalized = this.fn.normalize(oneQ_allD);
+            String raw_fileName = Config.configFile.getProperty("ANALYSIS_PATH")
+                    + "/all_folds_F-" + this.fNum + ".txt";
+            addQueryToResultsFile(docAsQuery, oneQ_allD_Normalized, raw_fileName);
+            for (int itNum : itNums) {
+                for (double lambda : lambdas) {
+                    String fileName = Config.configFile.getProperty("ANALYSIS_PATH")
+                            + "/all_folds_F-" + this.fNum + "_Lmbda-" + lambda
+                            + "_itNum-" + itNum + ".txt";
+                    fp.setLambda(lambda);
+                    fp.setNumIteration(itNum);
+                    HashMap<String, Feature> oneQ_allD_propagated = this.fp.propagator(oneQ_allD_Normalized);
+                    addQueryToResultsFile(docAsQuery, oneQ_allD_propagated, fileName);
+                }
             }
         }
         log.info("All cases has been calculated for document " + docAsQuery.getId());
@@ -132,7 +137,7 @@ public class PropagationAnalyzer extends EuroVocParser {
         ValueComparator bvc = new ValueComparator(oneQ_allD);
         TreeMap<String, Feature> sorted_map = new TreeMap<String, Feature>(bvc);
         sorted_map.putAll(oneQ_allD);
-        int rank =1;
+        int rank = 1;
         try {
             PrintWriter pw = new PrintWriter(new FileWriter(fileName, true));
             for (Entry<String, Feature> ent : sorted_map.entrySet()) {
