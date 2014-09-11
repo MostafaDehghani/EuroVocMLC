@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,6 @@ import nl.uva.mlc.eurovoc.featureextractor.FeaturesDefinition;
 import nl.uva.mlc.eurovoc.featureextractor.RawFeatureCalculator;
 import nl.uva.mlc.settings.Config;
 import static nl.uva.mlc.settings.Config.configFile;
-import org.apache.commons.io.FileUtils;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.SimpleFSDirectory;
 
@@ -36,9 +36,9 @@ import org.apache.lucene.store.SimpleFSDirectory;
 public class PropagationAnalyzer extends EuroVocParser {
 
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PropagationAnalyzer.class.getName());
-    private Integer fNum = 22;
-    private Integer[] itNums = {0,2};
-    private Double[] lambdas = {0.8};
+    private Integer fNum = null;
+    private ArrayList<Integer> itNums = null;
+    private ArrayList<Double> lambdas = null;
 
     private String queriesPath = null;
     private IndexReader ireader = null;
@@ -48,6 +48,16 @@ public class PropagationAnalyzer extends EuroVocParser {
     private FeaturePropagator fp = null;
 
     public PropagationAnalyzer() {
+        
+        this.fNum = Integer.parseInt(configFile.getProperty("FEATURE_NUM_FOR_ANALYSIS"));
+        this.itNums = new ArrayList<Integer>();
+        for(String s: Config.configFile.getProperty("ITERATION_NUMS").split(",")){
+            this.itNums.add(Integer.parseInt(s.trim()));
+        }
+        this.lambdas = new ArrayList<Double>();
+        for(String s: Config.configFile.getProperty("LAMBDAS").split(",")){
+            this.lambdas.add(Double.parseDouble(s.trim()));
+        }        
         this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
         try {
             this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
