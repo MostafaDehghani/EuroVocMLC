@@ -24,7 +24,7 @@ public class FeaturePropagator {
     
     HashSet<Integer> propagationBlackList = null;
     Integer numIteration = Integer.parseInt(Config.configFile.getProperty("ITERATION_NUM"));
-    Double lambda = Double.parseDouble(Config.configFile.getProperty("LAMBDA"));
+    Double alpha = Double.parseDouble(Config.configFile.getProperty("ALPHA"));
     String graphFilePath = Config.configFile.getProperty("CONCEPT_GRAPH_FILE_PATH");
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FeaturePropagator.class.getName());
     public Map<String, Map<String, Double>> conceptGraph = new HashMap<String, Map<String, Double>>();
@@ -35,8 +35,8 @@ public class FeaturePropagator {
         this.numIteration = numIteration;
     }
 
-    public void setLambda(Double lambda) {
-        this.lambda = lambda;
+    public void setAlpha(Double alpha) {
+        this.alpha = alpha;
     }
 
     
@@ -96,10 +96,10 @@ public class FeaturePropagator {
         while (itr < numIteration) {
             HashMap<String, Feature> newValues = new HashMap<>();
             for (Entry<String, Feature> ent : oldValues.entrySet()) {
-                double newValue = lambda * ent.getValue().getfValue();
+                double newValue = alpha * ent.getValue().getfValue();
                 for (Entry<String, Double> ent2 : conceptGraph.get(ent.getKey()).entrySet()) {
                     if (oldValues.containsKey(ent2.getKey())) {
-                        newValue += (1 - lambda) * oldValues.get(ent2.getKey()).getfValue() * (ent2.getValue() / propagationGraph.get(ent2.getKey()));
+                        newValue += (1 - alpha) * oldValues.get(ent2.getKey()).getfValue() * (ent2.getValue() / propagationGraph.get(ent2.getKey()));
                     }
                 }
                 Feature f = new Feature(ent.getValue().getfName(), newValue, ent.getValue().getqId(), ent.getValue().getdId(), ent.getValue().getLabel());

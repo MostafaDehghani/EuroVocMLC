@@ -38,7 +38,7 @@ public class PropagationAnalyzer extends EuroVocParser {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PropagationAnalyzer.class.getName());
     private ArrayList<Integer> fNum = null;
     private ArrayList<Integer> itNums = null;
-    private ArrayList<Double> lambdas = null;
+    private ArrayList<Double> alphas = null;
 
     private String queriesPath = null;
     private IndexReader ireader = null;
@@ -59,11 +59,11 @@ public class PropagationAnalyzer extends EuroVocParser {
             this.itNums.add(Integer.parseInt(s.trim()));
         }
         log.info("Iteration numbers for analyze:" + this.itNums.toString());
-        this.lambdas = new ArrayList<Double>();
-        for (String s : Config.configFile.getProperty("LAMBDAS").split(",")) {
-            this.lambdas.add(Double.parseDouble(s.trim()));
+        this.alphas = new ArrayList<Double>();
+        for (String s : Config.configFile.getProperty("ALPHAS").split(",")) {
+            this.alphas.add(Double.parseDouble(s.trim()));
         }
-        log.info("Lambdas for analyze:" + this.lambdas.toString());
+        log.info("Alphas for analyze:" + this.alphas.toString());
         this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
         try {
             this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
@@ -88,20 +88,22 @@ public class PropagationAnalyzer extends EuroVocParser {
         } catch (IOException ex) {
             log.error(ex);
         }
-        for (int itNum : itNums) {
-            for (double lambda : lambdas) {
-                String fileName = Config.configFile.getProperty("ANALYSIS_PATH")
-                        + "/all_folds_F-" + this.fNum + "_Lmbda-" + lambda
-                        + "_itNum-" + itNum + ".txt";
-                f = new File(fileName);
-                if (f.exists()) {
-                    f.delete();
-                    log.info("Deletting the existing files on: " + f.getPath());
-                }
-                try {
-                    f.createNewFile();
-                } catch (IOException ex) {
-                    log.error(ex);
+        for (int fnum : this.fNum) {
+            for (int itNum : itNums) {
+                for (double alpha : alphas) {
+                    String fileName = Config.configFile.getProperty("ANALYSIS_PATH")
+                            + "/all_folds_F-" + fnum + "_Alpha-" + alpha
+                            + "_itNum-" + itNum + ".txt";
+                    f = new File(fileName);
+                    if (f.exists()) {
+                        f.delete();
+                        log.info("Deletting the existing files on: " + f.getPath());
+                    }
+                    try {
+                        f.createNewFile();
+                    } catch (IOException ex) {
+                        log.error(ex);
+                    }
                 }
             }
         }
@@ -116,14 +118,14 @@ public class PropagationAnalyzer extends EuroVocParser {
             oneQ_allD = rfc.calculateFeatures(docAsQuery, fnum);
             HashMap<String, Feature> oneQ_allD_Normalized = this.fn.normalize(oneQ_allD);
             String raw_fileName = Config.configFile.getProperty("ANALYSIS_PATH")
-                    + "/all_folds_F-" + this.fNum + ".txt";
+                    + "/all_folds_F-" + fnum + ".txt";
             addQueryToResultsFile(docAsQuery, oneQ_allD_Normalized, raw_fileName);
             for (int itNum : itNums) {
-                for (double lambda : lambdas) {
+                for (double alpha : alphas) {
                     String fileName = Config.configFile.getProperty("ANALYSIS_PATH")
-                            + "/all_folds_F-" + this.fNum + "_Lmbda-" + lambda
+                            + "/all_folds_F-" + this.fNum + "_Alpha-" + alpha
                             + "_itNum-" + itNum + ".txt";
-                    fp.setLambda(lambda);
+                    fp.setAlpha(alpha);
                     fp.setNumIteration(itNum);
                     HashMap<String, Feature> oneQ_allD_propagated = this.fp.propagator(oneQ_allD_Normalized);
                     addQueryToResultsFile(docAsQuery, oneQ_allD_propagated, fileName);
