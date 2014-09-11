@@ -66,7 +66,7 @@ public class main {
        }
        else if(choice.equals("6")){
            TrecEvalInputProvider teip = new TrecEvalInputProvider();
-           teip.main(args[1], args[1], args[1], args[1]);
+           teip.main(args[1], args[2], args[3], args[4]);
            log.info("Input data for treceval are provided...");
        }
        else{
