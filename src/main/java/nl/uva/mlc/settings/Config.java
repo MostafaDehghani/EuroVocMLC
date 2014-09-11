@@ -1,5 +1,7 @@
 package nl.uva.mlc.settings;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -13,8 +15,10 @@ public class Config {
     public static Properties configFile = new Properties();
     static{
         try {
-	      InputStream stream = Config.class.getResourceAsStream("/Config.properties");
-              log.info("Confog file path: " + Config.class.getResource("/Config.properties").getPath());
+	      File cFile = new File("Config.properties");
+              log.info("Confog file path: " + cFile.getAbsolutePath());
+              InputStream stream = new FileInputStream(cFile);   
+//	      InputStream stream = Config.class.getResourceAsStream("Config.properties");
               configFile.load(stream);  
         } catch (IOException e) {
             e.printStackTrace();
