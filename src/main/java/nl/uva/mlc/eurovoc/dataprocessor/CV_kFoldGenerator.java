@@ -48,12 +48,12 @@ public class CV_kFoldGenerator {
                 int filesPerFold = fileNames.length / k;
                 for(int i = 0; i < k; i++)
                 {
-                    File fold = new File(outDir + "/fold" + i);
+                    File fold = new File(outDir + "/fold" + (i+1));
                     FileUtils.forceMkdir(fold);
-                    File file = new File(outDir + "/fold" + i + "/test.txt");
+                    File file = new File(outDir + "/fold" + (i+1) + "/test.txt");
                     FileWriter fw = new FileWriter(file);
                     BufferedWriter bw = new BufferedWriter(fw);
-                    File foldTrain = new File(outDir + "/fold" + i + "/train.txt");
+                    File foldTrain = new File(outDir + "/fold" + (i+1) + "/train.txt");
                     FileWriter fwTrain = new FileWriter(foldTrain);
                     BufferedWriter bwTrain = new BufferedWriter(fwTrain);
 

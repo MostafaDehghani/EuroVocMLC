@@ -96,10 +96,10 @@ public class FeaturePropagator {
         while (itr < numIteration) {
             HashMap<String, Feature> newValues = new HashMap<>();
             for (Entry<String, Feature> ent : oldValues.entrySet()) {
-                double newValue = alpha * ent.getValue().getfValue();
+                double newValue = (1-alpha) * ent.getValue().getfValue();
                 for (Entry<String, Double> ent2 : conceptGraph.get(ent.getKey()).entrySet()) {
                     if (oldValues.containsKey(ent2.getKey())) {
-                        newValue += (1 - alpha) * oldValues.get(ent2.getKey()).getfValue() * (ent2.getValue() / propagationGraph.get(ent2.getKey()));
+                        newValue += alpha * oldValues.get(ent2.getKey()).getfValue() * (ent2.getValue() / propagationGraph.get(ent2.getKey()));
                     }
                 }
                 Feature f = new Feature(ent.getValue().getfName(), newValue, ent.getValue().getqId(), ent.getValue().getdId(), ent.getValue().getLabel());
@@ -140,6 +140,31 @@ public class FeaturePropagator {
         return FinalFeatures;
     }
 
+        
+    public HashMap<String, Double> finalScorePropagator(HashMap<String, Double> scores) {
+        int itr = 0;
+        FeatureNormalizer fn = new FeatureNormalizer();
+        HashMap<String, Double> oldValues = scores;
+        //HashMap<String, Feature> newValues = new HashMap<>();
+        while (itr < numIteration) {
+            HashMap<String, Double> newValues = new HashMap<>();
+            for (Entry<String, Double> ent : oldValues.entrySet()) {
+                double newValue = (1-alpha) * ent.getValue();
+                for (Entry<String, Double> ent2 : conceptGraph.get(ent.getKey()).entrySet()) {
+                    if (oldValues.containsKey(ent2.getKey())) {
+                        newValue += alpha * oldValues.get(ent2.getKey()) * (ent2.getValue() / propagationGraph.get(ent2.getKey()));
+                    }
+                }
+                //Feature f = new Feature(ent.getValue().getfName(), newValue, ent.getValue().getqId(), ent.getValue().getdId(), ent.getValue().getLabel());
+                //f.setfValue(newValue);
+                newValues.put(ent.getKey(), newValue);
+            }
+            oldValues = fn.finalScoreNormalize(newValues);
+            itr++;
+        }
+        return oldValues;
+    }
+    
     public void readRawFeaturesAndPropagation(String rawFeatureFilePath) {
         BufferedReader br = null;
         File inFile = new File(rawFeatureFilePath);

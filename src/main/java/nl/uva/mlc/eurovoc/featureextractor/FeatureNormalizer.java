@@ -36,6 +36,22 @@ public class FeatureNormalizer {
         return normalizeFeatures;
     }
     
+    public HashMap<String, Double> finalScoreNormalize(Map<String, Double> scores)
+    {
+        HashMap<String, Double> normalizeFeatures = new HashMap<>();
+        double sum = 0;
+        for(Entry<String, Double> ent : scores.entrySet())
+            sum += ent.getValue();
+        for(Entry<String, Double> ent : scores.entrySet())
+        {
+            double normVal = 0;
+            if(sum > 0)
+                normVal = ent.getValue() / sum;
+            normalizeFeatures.put(ent.getKey(), normVal);
+        }
+        return normalizeFeatures;
+    }
+    
     public TreeMap<Integer, HashMap<String, Feature>> oneQueryNormalizer(TreeMap<Integer, HashMap<String, Feature>> features){
         TreeMap<Integer,HashMap<String,Feature>> NormalizedFeatures = new TreeMap<>();
         for(Entry<Integer,HashMap<String,Feature>> ent : features.entrySet())

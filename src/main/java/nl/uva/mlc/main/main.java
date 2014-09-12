@@ -10,6 +10,7 @@ import nl.uva.mlc.eurovoc.analyzer.PropagationAnalyzer;
 import nl.uva.mlc.eurovoc.dataprocessor.CV_kFoldGenerator;
 import nl.uva.mlc.eurovoc.dataprocessor.DataSeperator;
 import nl.uva.mlc.eurovoc.featureextractor.FeaturePropagator;
+import nl.uva.mlc.eurovoc.featureextractor.KFCPropagator;
 import nl.uva.mlc.eurovoc.featureextractor.RawFeatureCalculator;
 import nl.uva.mlc.eurovoc.irengine.Indexer;
 import nl.uva.mlc.learning.TrecEvalInputProvider;
@@ -26,12 +27,13 @@ public class main {
        if(args.length <1){
            log.info("The parameter should be set: "
                    + "\n 0:data seperation"
-                   + "\n 1:Indesing"
+                   + "\n 1:Indexing"
                    + "\n 2:Raw feature claculating"
                    + "\n 3:Propagating  -> param alongs with the all_folds"
                    + "\n 4:Kfold  generating -> param alongs with the all_folds kFoldDir and k"
                    + "\n 5:Analysing"
-                   + "\n 6:TrecEval data Provider -> param alongs with textfile, scoresFile, resultFile, judgeFile");
+                   + "\n 6:K-Fold propagator -> param alongs with the path of directory contains folds directories"
+                   + "\n 7:TrecEval data Provider -> param alongs with textfile, scoresFile, resultFile, judgeFile");
            return;
        }
        String choice = args[0];
@@ -65,6 +67,11 @@ public class main {
         log.info("Analysing is finished...");
        }
        else if(choice.equals("6")){
+           KFCPropagator kfcp = new KFCPropagator();
+           kfcp.main(args[1]);
+        log.info("Analysing is finished...");
+       }
+       else if(choice.equals("7")){
            TrecEvalInputProvider teip = new TrecEvalInputProvider();
            teip.main(args[1], args[2], args[3], args[4]);
            log.info("Input data for treceval are provided...");
