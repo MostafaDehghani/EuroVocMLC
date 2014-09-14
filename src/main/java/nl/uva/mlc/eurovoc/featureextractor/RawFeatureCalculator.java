@@ -19,7 +19,6 @@ import nl.uva.mlc.eurovoc.EuroVocDoc;
 import nl.uva.mlc.eurovoc.EuroVocParser;
 import nl.uva.mlc.settings.Config;
 import static nl.uva.mlc.settings.Config.configFile;
-import org.apache.commons.io.FileUtils;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.store.SimpleFSDirectory;
 
