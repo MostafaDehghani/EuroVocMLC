@@ -16,7 +16,7 @@ public class Config {
     static{
         try {
 	      File cFile = new File("Config.properties");
-              log.info("Confog file path: " + cFile.getAbsolutePath());
+              log.info("\n.....Confog file path: " + cFile.getAbsolutePath() + "......");
               InputStream stream = new FileInputStream(cFile);   
 //	      InputStream stream = Config.class.getResourceAsStream("Config.properties");
               configFile.load(stream);  
