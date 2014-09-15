@@ -66,10 +66,10 @@ public class CV_kFoldGenerator {
                         String name = str.split(" # ")[1].split(" ")[0];
                         if(mp.get(name) >= i * filesPerFold && mp.get(name) < maxFile)
                         {
-                            bwTest.write(str);
+                            bwTest.write(str + "\n");
                         }
                         else
-                            bwTrain.write(str);
+                            bwTrain.write(str + "\n");
                     }
                     bwTest.close();
                     bwTrain.close();
