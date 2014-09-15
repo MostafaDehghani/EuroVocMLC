@@ -14,8 +14,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,11 +49,11 @@ public class CV_kFoldGenerator {
                 {
                     File fold = new File(outDir + "/fold" + (i+1));
                     FileUtils.forceMkdir(fold);
-                    File file = new File(outDir + "/fold" + (i+1) + "/test.txt");
-                    FileWriter fw = new FileWriter(file);
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    File foldTrain = new File(outDir + "/fold" + (i+1) + "/train.txt");
-                    FileWriter fwTrain = new FileWriter(foldTrain);
+                    File testFile = new File(outDir + "/fold" + (i+1) + "/test.txt");
+                    FileWriter fwTest = new FileWriter(testFile);
+                    BufferedWriter bwTest = new BufferedWriter(fwTest);
+                    File trainFile = new File(outDir + "/fold" + (i+1) + "/train.txt");
+                    FileWriter fwTrain = new FileWriter(trainFile);
                     BufferedWriter bwTrain = new BufferedWriter(fwTrain);
 
                     int maxFile = (i + 1) * filesPerFold;
@@ -68,12 +66,16 @@ public class CV_kFoldGenerator {
                         String name = str.split(" # ")[1].split(" ")[0];
                         if(mp.get(name) >= i * filesPerFold && mp.get(name) < maxFile)
                         {
-                            bw.write(str);
+                            bwTest.write(str);
                         }
                         else
                             bwTrain.write(str);
                     }
+                    bwTest.close();
+                    bwTrain.close();
+                    log.info("Fold " + i + " is created on: " + fold.getPath());
                 }
+                
             } catch (IOException ex) {
                 log.error(ex);
             }
