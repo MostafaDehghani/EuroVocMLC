@@ -15,6 +15,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import static nl.uva.mlc.settings.Config.configFile;
@@ -34,18 +36,17 @@ public class CV_kFoldGenerator {
         try {
             BufferedReader bf = new BufferedReader(new FileReader(new File(InputFeatureFile)));
             String str;
-            ArrayList<String> names = new ArrayList<>();
+            ArrayList<String> fileNames = new ArrayList<>();
             try {
                 while((str = bf.readLine()) != null)
                 {
-                    names.add(str.split(" # ")[1].split(" ")[0]);
+                    fileNames.add(str.split(" # ")[1].split(" ")[0]);
                 }
-                String[] fileNames = (String[]) names.toArray();
-                Arrays.sort(fileNames);
+                Collections.sort(fileNames);
                 Map<String , Integer> mp = new HashMap<String, Integer>();
-                for(int i = 0; i < fileNames.length; i++)
-                    mp.put(fileNames[i], i);
-                int filesPerFold = fileNames.length / k;
+                for(int i = 0; i < fileNames.size(); i++)
+                    mp.put(fileNames.get(i), i);
+                int filesPerFold = fileNames.size() / k;
                 for(int i = 0; i < k; i++)
                 {
                     File fold = new File(outDir + "/fold" + (i+1));
@@ -59,7 +60,7 @@ public class CV_kFoldGenerator {
 
                     int maxFile = (i + 1) * filesPerFold;
                     if(i == k-1)
-                        maxFile = fileNames.length;
+                        maxFile = fileNames.size();
 
                     bf = new BufferedReader(new FileReader(new File(InputFeatureFile)));
                     while((str = bf.readLine()) != null)
@@ -83,6 +84,7 @@ public class CV_kFoldGenerator {
     public void main(String InputFeatureFile, String outDir, Integer k) {
         if(k!=null)
             this.k = k;
+        log.info(this.k + "-fold generating...");
         this.FoldCreator(InputFeatureFile, outDir);
     }
 }
