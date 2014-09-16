@@ -73,7 +73,7 @@ public class CV_kFoldGenerator {
                     }
                     bwTest.close();
                     bwTrain.close();
-                    log.info("Fold " + i + " is created on: " + fold.getPath());
+                    log.info("Fold " + (i+1) + " is created on: " + fold.getPath());
                 }
                 
             } catch (IOException ex) {

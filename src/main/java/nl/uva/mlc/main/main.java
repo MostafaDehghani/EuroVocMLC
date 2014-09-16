@@ -69,7 +69,7 @@ public class main {
        else if(choice.equals("6")){
            KFCPropagator kfcp = new KFCPropagator();
            kfcp.main(args[1]);
-        log.info("Analysing is finished...");
+        log.info("K-Fold propagation is finished...");
        }
        else if(choice.equals("7")){
            TrecEvalInputProvider teip = new TrecEvalInputProvider();
