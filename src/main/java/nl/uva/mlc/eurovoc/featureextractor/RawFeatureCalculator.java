@@ -138,148 +138,118 @@ public class RawFeatureCalculator extends EuroVocParser {
                 break;
             case 10:
                 params= Arrays.asList(2000F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "UNDESC", "LMD", params);
+                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "CUMDESC","LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
             case 11:
                 params= Arrays.asList(0.6F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "UNDESC", "LMJM", params);
+                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "CUMDESC", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
             case 12:
                 params= Arrays.asList(0.75F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "UNDESC", "BM25", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 13:
-                params= Arrays.asList(2000F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "CUMDESC","LMD", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 14:
-                params= Arrays.asList(0.6F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "CUMDESC", "LMJM", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 15:
-                params= Arrays.asList(0.75F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "CUMDESC", "BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 16:
-                params= Arrays.asList(2000F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "CUMUNDESC", "LMD", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 17:
-                params= Arrays.asList(0.6F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "CUMUNDESC", "LMJM", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 18:
-                params= Arrays.asList(0.75F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TEXT", "CUMUNDESC", "BM25", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 19:
+            case 13:
                 params= Arrays.asList(1000F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery,"TITLE", "TEXT", "LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 20:
+            case 14:
                 params= Arrays.asList(0.2F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery,"TITLE", "TEXT", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 21:
+            case 15:
                 params= Arrays.asList(0.65F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery,"TITLE", "TEXT", "BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 22:
+            case 16:
                 params= Arrays.asList(1000F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "TITLE", "LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 23:
+            case 17:
                 params= Arrays.asList(0.2F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "TITLE", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 24:
+            case 18:
                 params= Arrays.asList(0.65F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery,"TITLE", "TITLE","BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 25:
+            case 19:
                 params= Arrays.asList(1000F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "DESC","LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 26:
+            case 20:
                 params= Arrays.asList(0.2F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "DESC", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 27:
+            case 21:
                 params= Arrays.asList(0.65F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "DESC","BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 28:
+            case 22:
                 params= Arrays.asList(1000F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "UNDESC", "LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 29:
+            case 23:
                 params= Arrays.asList(0.2F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "UNDESC", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 30:
+            case 24:
                 params= Arrays.asList(0.65F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "UNDESC", "BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 31:
+            case 25:
                 params= Arrays.asList(1000F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMDESC","LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 32:
+            case 26:
                 params= Arrays.asList(0.2F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMDESC", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 33:
+            case 27:
                 params= Arrays.asList(0.65F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMDESC", "BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 34:
+            case 28:
                 params= Arrays.asList(1000F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMUNDESC", "LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 35:
+            case 29:
                 params= Arrays.asList(0.2F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMUNDESC", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 36:
+            case 30:
                 params= Arrays.asList(0.65F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMUNDESC", "BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 37:
+            case 31:
                 f = fd.F_4_degreeInHierarchy(docAsQuery,"p");
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 38:
+            case 32:
                 f = fd.F_4_degreeInHierarchy(docAsQuery,"c");
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 39:
+            case 33:
                 f = fd.F_5_docNum(docAsQuery);
                 allFeature_oneQ_allD.putAll(f);
                 break;
