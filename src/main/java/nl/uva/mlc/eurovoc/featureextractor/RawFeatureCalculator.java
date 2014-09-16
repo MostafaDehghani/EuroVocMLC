@@ -33,23 +33,24 @@ public class RawFeatureCalculator extends EuroVocParser {
     private FeaturesDefinition fd = null;
     private FeatureNormalizer fn = new FeatureNormalizer();
     private Integer qId=1;
-
+    private String outDir;
     public RawFeatureCalculator() {
 
     }
 
     private void Init(){
                 
+        
         this.featureNumbers = new ArrayList<>();
         for(String s: Config.configFile.getProperty("FEATURE_NUMBERS").split(",")){
             this.featureNumbers.add(Integer.parseInt(s.trim()));
         }
         log.info("features to be calculated: " + this.featureNumbers.toString());
           try {
-            File file = new File(Config.configFile.getProperty("FEATURE_K-FOLD_PATH") + "/all_folds_" + this.featureNumbers.toString() + ".txt");
+            File file = new File(this.outDir + "/all_folds_" + this.featureNumbers.toString() + ".txt");
             if (file.exists()) {
                 file.delete();
-                log.info("Deletting the existing directory on: " + configFile.getProperty("FEATURE_K-FOLD_PATH"));
+                log.info("Deletting the existing directory on: " + this.outDir);
             }
            file.createNewFile();
         } catch (IOException ex) {
@@ -298,7 +299,7 @@ public class RawFeatureCalculator extends EuroVocParser {
             }
         }
         try{
-        PrintWriter pw = new PrintWriter(new FileWriter(Config.configFile.getProperty("FEATURE_K-FOLD_PATH")+"/all_folds_"+this.featureNumbers.toString() +".txt",true));
+        PrintWriter pw = new PrintWriter(new FileWriter(this.outDir +"/all_folds_"+this.featureNumbers.toString() +".txt",true));
         for(Map.Entry<String, TreeMap<Integer,Feature>> ent: docs.entrySet()){
 
                 String lbl = (docAsQuery.getClasses().contains(ent.getKey()))? "1" : "0";
@@ -327,7 +328,8 @@ public class RawFeatureCalculator extends EuroVocParser {
         }catch(IOException ex){
             log.error(ex);
         }    }
-     public void main(){
+     public void main(String outDir){
+        this.outDir = outDir;
         this.Init();
         this.conceptBaseFeatureCalc();
     }

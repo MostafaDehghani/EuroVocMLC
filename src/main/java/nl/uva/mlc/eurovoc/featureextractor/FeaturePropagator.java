@@ -30,6 +30,7 @@ public class FeaturePropagator {
     public Map<String, Map<String, Double>> conceptGraph = new HashMap<String, Map<String, Double>>();
     public Map<String, Double> propagationGraph = new HashMap<String, Double>();
     private TreeMap<Integer, HashMap<String, HashMap<String, Feature>>> features;
+    private String outDir;
 
     public void setNumIteration(Integer numIteration) {
         this.numIteration = numIteration;
@@ -168,7 +169,7 @@ public class FeaturePropagator {
     public void readRawFeaturesAndPropagation(String rawFeatureFilePath) {
         BufferedReader br = null;
         File inFile = new File(rawFeatureFilePath);
-        String outFilePath= Config.configFile.getProperty("FEATURE_PROPAGATED_K-FOLD_PATH")+"Propagated_" + inFile.getName();
+        String outFilePath= this.outDir +"Propagated_" + inFile.getName();
         //
         try {
             File file = new File(outFilePath);
@@ -275,7 +276,8 @@ public class FeaturePropagator {
             log.error(ex);
         }
     }
-    public void main(String rowFeaturePath) {
+    public void main(String rowFeaturePath, String outDir) {
+        this.outDir = outDir;
         this.readRawFeaturesAndPropagation(rowFeaturePath);
     }
 }

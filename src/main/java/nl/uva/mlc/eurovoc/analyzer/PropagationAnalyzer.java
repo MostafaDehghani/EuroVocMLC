@@ -46,6 +46,7 @@ public class PropagationAnalyzer extends EuroVocParser {
     private RawFeatureCalculator rfc = null;
     private FeatureNormalizer fn = null;
     private FeaturePropagator fp = null;
+    private String outDir;
 
     public PropagationAnalyzer() {
 
@@ -79,7 +80,7 @@ public class PropagationAnalyzer extends EuroVocParser {
         //Cleaning
         File f;
         for (int fnum : this.fNum) {
-        f = new File(Config.configFile.getProperty("ANALYSIS_PATH")
+        f = new File(this.outDir
                 + "/all_folds_F-" + fnum + ".txt");
         try {
             if (f.exists()) {
@@ -94,7 +95,7 @@ public class PropagationAnalyzer extends EuroVocParser {
         for (int fnum : this.fNum) {
             for (int itNum : itNums) {
                 for (double alpha : alphas) {
-                    String fileName = Config.configFile.getProperty("ANALYSIS_PATH")
+                    String fileName = this.outDir
                             + "/all_folds_F-" + fnum + "_Alpha-" + alpha
                             + "_itNum-" + itNum + ".txt";
                     f = new File(fileName);
@@ -120,12 +121,12 @@ public class PropagationAnalyzer extends EuroVocParser {
             HashMap<String, Feature> oneQ_allD = new HashMap<String, Feature>();
             oneQ_allD = rfc.calculateFeatures(docAsQuery, fnum);
             HashMap<String, Feature> oneQ_allD_Normalized = this.fn.normalize(oneQ_allD);
-            String raw_fileName = Config.configFile.getProperty("ANALYSIS_PATH")
+            String raw_fileName = this.outDir
                     + "/all_folds_F-" + fnum + ".txt";
             addQueryToResultsFile(docAsQuery, oneQ_allD_Normalized, raw_fileName);
             for (int itNum : itNums) {
                 for (double alpha : alphas) {
-                    String fileName = Config.configFile.getProperty("ANALYSIS_PATH")
+                    String fileName = this.outDir
                             + "/all_folds_F-" + fnum + "_Alpha-" + alpha
                             + "_itNum-" + itNum + ".txt";
                     fp.setAlpha(alpha);
@@ -158,7 +159,7 @@ public class PropagationAnalyzer extends EuroVocParser {
     private void addQueryToJudgmentFile(EuroVocDoc docAsQuery) {
         PrintWriter pw = null;
         try {
-            String jugeFileName = Config.configFile.getProperty("ANALYSIS_PATH") + "/judg.txt";
+            String jugeFileName = this.outDir + "/judg.txt";
             pw = new PrintWriter(new FileWriter(jugeFileName, true));
             for (String classlbl : docAsQuery.getClasses()) {
                 String line = docAsQuery.getId() + " 0 " + classlbl + " 1";
@@ -170,7 +171,8 @@ public class PropagationAnalyzer extends EuroVocParser {
         }
     }
 
-    public void main() {
+    public void main(String outDir) {
+        this.outDir = outDir;
         this.fileReader(new File(queriesPath));
     }
 

@@ -124,7 +124,7 @@ public class KFCPropagator {
             } catch (IOException ex) {
                 log.error(ex);
             }
-            
+           log.info("------------- Fold " + (i+1) + " is finished--------------");
         }
     }
         

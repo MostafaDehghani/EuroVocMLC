@@ -28,10 +28,10 @@ public class main {
            log.info("The parameter should be set: "
                    + "\n 0:data seperation"
                    + "\n 1:Indexing"
-                   + "\n 2:Raw feature claculating"
-                   + "\n 3:Propagating  -> param alongs with the all_folds"
+                   + "\n 2:Raw feature claculating -> param alongs with the output directery"
+                   + "\n 3:Propagating  -> param alongs with the all_folds out directory"
                    + "\n 4:Kfold  generating -> param alongs with the all_folds kFoldDir and k"
-                   + "\n 5:Analysing"
+                   + "\n 5:Analysing -> param alongs with the output directery"
                    + "\n 6:K-Fold propagator -> param alongs with the path of directory contains folds directories"
                    + "\n 7:TrecEval data Provider -> param alongs with textfile, scoresFile, resultFile, judgeFile");
            return;
@@ -48,12 +48,12 @@ public class main {
        }
        else if(choice.equals("2")){
         RawFeatureCalculator rfc = new RawFeatureCalculator();
-        rfc.main();
+        rfc.main(args[1]);
         log.info("Raw feature extraction is finished...");
        }
        else if(choice.equals("3")){
         FeaturePropagator fp = new FeaturePropagator();
-        fp.main(args[1]);
+        fp.main(args[1],args[2]);
         log.info("freature propagation is finished...");
        }
        else if(choice.equals("4")){
@@ -63,7 +63,7 @@ public class main {
        }
        else if(choice.equals("5")){
         PropagationAnalyzer pa = new PropagationAnalyzer();
-        pa.main();
+        pa.main(args[1]);
         log.info("Analysing is finished...");
        }
        else if(choice.equals("6")){

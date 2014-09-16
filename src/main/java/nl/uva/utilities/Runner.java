@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Set;
 
 /**
  *
@@ -21,6 +20,7 @@ public class Runner extends Thread{
     final InputStream is;
     final String type;
     final StringBuilder sb;
+    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Runner.class.getName());
 
     Runner(final InputStream is, String type)
     {
@@ -79,6 +79,9 @@ public class Runner extends Thread{
         catch (final InterruptedException e)
         {
             throw new RuntimeException(e);
+        } catch (IOException ex) {
+            log.error(ex);
+            throw new IOException(ex.getMessage(), ex.getCause());
         }
      }
 }
