@@ -1,35 +1,38 @@
-///*
-// * To change this license header, choose License Headers in Project Properties.
-// * To change this template file, choose Tools | Templates
-// * and open the template in the editor.
-// */
-//
-//package nl.uva.mlc.eurovoc.analyzer;
-//
-//import java.io.BufferedReader;
-//import java.io.BufferedWriter;
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
-//import java.io.FileReader;
-//import java.io.FileWriter;
-//import java.io.IOException;
-//import java.util.HashMap;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-//import nl.uva.utilities.Runner;
-//
-///**
-// *
-// * @author Mosi
-// */
-//public class StatisticalTest {
-//
-//    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(StatisticalTest.class.getName());
-//    private String inFile1;
-//    private String inFile2;
-//    private String outDir;
-//    private HashMap<String,String> ids = null;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package nl.uva.mlc.eurovoc.analyzer;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import nl.uva.utilities.Runner;
+
+/**
+ *
+ * @author Mosi
+ */
+public class StatisticalTest {
+
+    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(StatisticalTest.class.getName());
+    private String inFile1;
+    private String inFile2;
+    private String outDir;
+    private HashMap<String,String> ids = null;
+    
+    
+    
+//    
 //    private void runEvalScript() throws IOException{
 //        try {
 //            File inF1 = new File(inFile1);
@@ -101,4 +104,4 @@
 //        
 //        return new String[]{allFolds_test.getPath(),allFolds_pred.getPath()};
 //    }
-//}
+}
