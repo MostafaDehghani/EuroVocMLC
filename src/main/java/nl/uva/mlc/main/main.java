@@ -81,7 +81,7 @@ public class main {
        else if(choice.equals("8")){
            FoldsConcatinator fc = new FoldsConcatinator();
            fc.main(args);
-           log.info("Input data for treceval are provided...");
+           log.info("Folds concatination is finished...");
        }
        else{
            log.info("The parameter should be set correctly...");
