@@ -3,6 +3,8 @@ package nl.uva.mlc.eurovoc;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -29,6 +31,13 @@ public abstract class EuroVocParser {
     
     public void fileReader(File mainFile) {
         File[] files = mainFile.listFiles();
+        Arrays.sort(files, new Comparator()
+                {
+                    @Override
+                    public int compare(Object f1, Object f2) {
+                        return ((File) f1).getName().compareTo(((File) f2).getName());
+                    }
+                });
         for(File file:files){
             if(file.isDirectory()){
                 fileReader(file);
