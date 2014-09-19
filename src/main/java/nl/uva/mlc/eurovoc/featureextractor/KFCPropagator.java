@@ -53,9 +53,9 @@ public class KFCPropagator {
     public void propagator()
     {
         this.fp = new FeaturePropagator();
-        Map<String, HashMap<String, Double>> scores = new HashMap<>();
         for(int i = 0; i < k; i++)
         {
+            Map<String, HashMap<String, Double>> scores = new HashMap<>();
             try {
                     File file2 = new File(KFoldPath + "/fold" + (i+1) + "/judg.txt");
                     if(file2.exists())
