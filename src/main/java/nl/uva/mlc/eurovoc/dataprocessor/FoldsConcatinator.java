@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
 
 /**
  *
@@ -25,7 +26,7 @@ public class FoldsConcatinator {
         File[] files = new File(folds[1]).listFiles();
         for(File f:files){
             try {
-                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(outDirPath +"/"+f.getName(), true)));
+                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(outDirPath +"/"+f.getName())));
                 for(int i=1;i<folds.length-1;i++){
                     BufferedReader br = new BufferedReader(new FileReader(folds[i]+"/"+ f.getName()));
                     String line;
@@ -42,12 +43,20 @@ public class FoldsConcatinator {
     }
     public void FilesConcatinator(String[] folds) {
         String outFilePath = folds[folds.length-1];
+        HashSet<String> ids = new HashSet<String>();
             try {
-                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(outFilePath, true)));
+                PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(outFilePath)));
                 for(int i=1;i<folds.length-1;i++){
                     BufferedReader br = new BufferedReader(new FileReader(folds[i]));
                     String line;
                     while((line=br.readLine())!=null){
+                            String[] parts = line.split("s\\+");
+                            String tmpId = parts[0]+ "\t" +parts[2];
+                            if(ids.contains(tmpId)){
+                                log.error("ERROR in merging for: " + tmpId + " on " + folds[i]);
+                                return;
+                            }
+                            ids.add(tmpId);
                         pw.println(line);
                     }
                 }
