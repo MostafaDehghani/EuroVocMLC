@@ -58,6 +58,7 @@ public class FoldsConcatinator {
                 PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(outFilePath)));
                 for(int i=1;i<folds.length-1;i++){
                     BufferedReader br = new BufferedReader(new FileReader(folds[i]));
+                    log.error("...File " + folds[i] + "is proccessed...");
                     String line;
                     while((line=br.readLine())!=null){
                             String[] parts = line.split("\\s+");
