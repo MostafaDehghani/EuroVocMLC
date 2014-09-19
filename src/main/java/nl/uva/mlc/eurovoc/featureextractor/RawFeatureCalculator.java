@@ -199,62 +199,31 @@ public class RawFeatureCalculator extends EuroVocParser {
                 break;
             case 22:
                 params= Arrays.asList(1000F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "UNDESC", "LMD", params);
+                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMDESC", "LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
             case 23:
                 params= Arrays.asList(0.2F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "UNDESC", "LMJM", params);
+                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMDESC", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
             case 24:
                 params= Arrays.asList(0.65F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "UNDESC", "BM25", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 25:
-                params= Arrays.asList(1000F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMDESC","LMD", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 26:
-                params= Arrays.asList(0.2F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMDESC", "LMJM", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 27:
-                params= Arrays.asList(0.65F);
                 f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMDESC", "BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 28:
-                params= Arrays.asList(1000F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMUNDESC", "LMD", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 29:
-                params= Arrays.asList(0.2F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMUNDESC", "LMJM", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 30:
-                params= Arrays.asList(0.65F);
-                f = fd.F_1_2_3_retrievalBased(docAsQuery, "TITLE", "CUMUNDESC", "BM25", params);
-                allFeature_oneQ_allD.putAll(f);
-                break;
-            case 31:
+            case 25:
                 f = fd.F_4_degreeInHierarchy(docAsQuery,"p");
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 32:
+            case 26:
                 f = fd.F_4_degreeInHierarchy(docAsQuery,"c");
                 allFeature_oneQ_allD.putAll(f);
                 break;
-            case 33:
+            case 27:
                 f = fd.F_5_docNum(docAsQuery);
                 allFeature_oneQ_allD.putAll(f);
                 break;
-
             default:
                 log.info("Not valid feature number: " + fnum);
         }
