@@ -22,20 +22,22 @@ import java.util.HashSet;
 public class FoldsConcatinator {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FoldsConcatinator.class.getName());
     public void DirFilesConcatinator(String[] folds) {
-        HashSet<String> ids = new HashSet<String>();
         String outDirPath = folds[folds.length-1];
         File[] files = new File(folds[1]).listFiles();
         for(File f:files){
+            HashSet<String> ids = new HashSet<String>();
             try {
                 PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(outDirPath +"/"+f.getName())));
                 for(int i=1;i<folds.length-1;i++){
-                    BufferedReader br = new BufferedReader(new FileReader(folds[i]+"/"+ f.getName()));
+                    String currentFile = folds[i]+"/"+ f.getName();
+                    BufferedReader br = new BufferedReader(new FileReader(currentFile));
+                    log.error("...File " + currentFile + "is proccessed...");
                     String line;
                     while((line=br.readLine())!=null){
                             String[] parts = line.split("\\s+");
                             String tmpId = parts[0]+ "\t" +parts[2];
                             if(ids.contains(tmpId)){
-                                log.error("ERROR in merging, duplicate for: \"" + tmpId + "\" on " + folds[i]+"/"+ f.getName());
+                                log.error("ERROR in merging, duplicate for: \"" + tmpId + "\" on " + currentFile);
                                 return;
                             }
                             ids.add(tmpId);
@@ -46,7 +48,7 @@ public class FoldsConcatinator {
             } catch (IOException ex) {
                 log.error(ex);
             }
-            log.info("File " + f.getName() + "is generated....");
+            log.info("Merged file of all " + f.getName() + " in all folds is generated....");
         }
     }
     public void FilesConcatinator(String[] folds) {
