@@ -22,6 +22,7 @@ import java.util.HashSet;
 public class FoldsConcatinator {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FoldsConcatinator.class.getName());
     public void DirFilesConcatinator(String[] folds) {
+        HashSet<String> ids = new HashSet<String>();
         String outDirPath = folds[folds.length-1];
         File[] files = new File(folds[1]).listFiles();
         for(File f:files){
@@ -31,6 +32,13 @@ public class FoldsConcatinator {
                     BufferedReader br = new BufferedReader(new FileReader(folds[i]+"/"+ f.getName()));
                     String line;
                     while((line=br.readLine())!=null){
+                            String[] parts = line.split("s\\+");
+                            String tmpId = parts[0]+ "\t" +parts[2];
+                            if(ids.contains(tmpId)){
+                                log.error("ERROR in merging, duplicate for: " + tmpId + " on " + folds[i]);
+                                return;
+                            }
+                            ids.add(tmpId);
                         pw.println(line);
                     }
                 }
@@ -64,7 +72,7 @@ public class FoldsConcatinator {
             } catch (IOException ex) {
                 log.error(ex);
             }
-            log.info("File " + outFilePath + "is generated....");
+            log.info("File  " + outFilePath + " is generated....");
     }
     public void main(String[] args){
         if(new File(args[1]).isDirectory()){
