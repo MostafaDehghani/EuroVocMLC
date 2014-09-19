@@ -82,15 +82,11 @@ public class PropagationAnalyzer extends EuroVocParser {
         for (int fnum : this.fNum) {
         f = new File(this.outDir
                 + "/all_folds_F-" + fnum + ".txt");
-        try {
             if (f.exists()) {
                 f.delete();
                 log.info("Deletting the existing files on: " + f.getPath());
             }
-            f.createNewFile();
-        } catch (IOException ex) {
-            log.error(ex);
-        }
+
         }
         for (int fnum : this.fNum) {
             for (int itNum : itNums) {
@@ -102,11 +98,6 @@ public class PropagationAnalyzer extends EuroVocParser {
                     if (f.exists()) {
                         f.delete();
                         log.info("Deletting the existing files on: " + f.getPath());
-                    }
-                    try {
-                        f.createNewFile();
-                    } catch (IOException ex) {
-                        log.error(ex);
                     }
                 }
             }
