@@ -53,7 +53,7 @@ public class FoldsConcatinator {
                             String[] parts = line.split("s\\+");
                             String tmpId = parts[0]+ "\t" +parts[2];
                             if(ids.contains(tmpId)){
-                                log.error("ERROR in merging for: " + tmpId + " on " + folds[i]);
+                                log.error("ERROR in merging, duplicate for: " + tmpId + " on " + folds[i]);
                                 return;
                             }
                             ids.add(tmpId);
