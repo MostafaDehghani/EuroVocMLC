@@ -32,8 +32,7 @@ public class FoldsConcatinator {
                     BufferedReader br = new BufferedReader(new FileReader(folds[i]+"/"+ f.getName()));
                     String line;
                     while((line=br.readLine())!=null){
-                            String[] parts = line.split("s\\+");
-                            System.out.println(line);
+                            String[] parts = line.split("\\s+");
                             String tmpId = parts[0]+ "\t" +parts[2];
                             if(ids.contains(tmpId)){
                                 log.error("ERROR in merging, duplicate for: " + tmpId + " on " + folds[i]);
@@ -59,7 +58,7 @@ public class FoldsConcatinator {
                     BufferedReader br = new BufferedReader(new FileReader(folds[i]));
                     String line;
                     while((line=br.readLine())!=null){
-                            String[] parts = line.split("s\\+");
+                            String[] parts = line.split("\\s+");
                             String tmpId = parts[0]+ "\t" +parts[2];
                             if(ids.contains(tmpId)){
                                 log.error("ERROR in merging, duplicate for: " + tmpId + " on " + folds[i]);
