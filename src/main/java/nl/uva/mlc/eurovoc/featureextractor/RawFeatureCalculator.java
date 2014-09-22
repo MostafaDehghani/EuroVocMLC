@@ -224,6 +224,10 @@ public class RawFeatureCalculator extends EuroVocParser {
                 f = fd.F_classDocNum();
                 allFeature_oneQ_allD.putAll(f);
                 break;
+            case 28:
+                f = fd.F_classLevelInHierarchy();
+                allFeature_oneQ_allD.putAll(f);
+                break;
             default:
                 log.info("Not valid feature number: " + fnum);
         }
