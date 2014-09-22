@@ -1,10 +1,14 @@
 package nl.uva.mlc.eurovoc;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -15,6 +19,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import static nl.uva.mlc.settings.Config.configFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -28,8 +33,30 @@ import org.xml.sax.SAXException;
 
 public abstract class EuroVocParser {
     
-    
+    private HashSet<String> conceptBlackList = new HashSet<String>();
+    private void init(){
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(new File(configFile.getProperty("CONCEPTS_BALCK_LIST"))));
+            String line;
+            while((line=br.readLine())!=null){
+                this.conceptBlackList.add(line.trim());
+            }
+            br.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                br.close();
+            } catch (IOException ex) {
+                Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
     public void fileReader(File mainFile) {
+        this.init();
         File[] files = mainFile.listFiles();
         Arrays.sort(files, new Comparator()
                 {
@@ -96,7 +123,9 @@ public abstract class EuroVocParser {
                         NodeList classesNodes = (NodeList)classExpr.evaluate(document, XPathConstants.NODESET);
                         ArrayList<String> classes = new ArrayList<>();
                         for (int i = 0; i < classesNodes.getLength(); i++) {
-                            classes.add(classesNodes.item(i).getTextContent());
+                            String c = classesNodes.item(i).getTextContent();
+                            if(!conceptBlackList.contains(c))
+                                classes.add(c);
                         }
                         NodeList textNodes = (NodeList)textExpr.evaluate(document, XPathConstants.NODESET);
                         String text = "";
