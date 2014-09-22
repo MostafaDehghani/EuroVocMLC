@@ -75,12 +75,13 @@ public class KFCPropagator {
                         if(str.split(" ")[0].equals("1"))
                             judg.write(parts[0] + " 0 " + parts[1] + " 1" + "\n");
                         str2 = scoresFile.readLine();
+                        Double score = Double.valueOf(str2.split("\\s+")[2]);
                         if(scores.containsKey(parts[0]))
-                            scores.get(parts[0]).put(parts[1], Double.valueOf(str2));
+                            scores.get(parts[0]).put(parts[1], score);
                         else
                         {
                             HashMap<String, Double> temp = new HashMap<>();
-                            temp.put(parts[1], Double.valueOf(str2.split("\\s+")[2]));
+                            temp.put(parts[1], score);
                             scores.put(parts[0], temp);
                         }
                     }
