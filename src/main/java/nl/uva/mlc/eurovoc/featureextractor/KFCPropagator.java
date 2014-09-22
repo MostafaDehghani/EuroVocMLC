@@ -80,7 +80,7 @@ public class KFCPropagator {
                         else
                         {
                             HashMap<String, Double> temp = new HashMap<>();
-                            temp.put(parts[1], Double.valueOf(str2.split("\\s+")[2]));
+                            temp.put(parts[1], Double.valueOf(str2));
                             scores.put(parts[0], temp);
                         }
                     }
