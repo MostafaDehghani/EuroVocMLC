@@ -1,9 +1,10 @@
 package nl.uva.mlc.eurovoc.irengine;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +52,7 @@ public class Indexer extends EuroVocParser {
     private final Integer minNumDocPerConcept = Integer.parseInt(configFile.getProperty("MIN_NUM_DOC_PER_CONCEPT"));
     private Map<String, Analyzer> analyzerMap = new HashMap<String, Analyzer>();
     private Map<String, String> conceptDescs = new HashMap<String, String>();
+    private Map<String, String> conceptLevel = new HashMap<String, String>();
     private Map<String, ArrayList<String>> conceptUnDescs = new HashMap<>();
     private Map<String, ArrayList<String>> conceptHierarchy_getParents = new HashMap<>();
     private Map<String, ArrayList<String>> conceptHierarchy_getChild = new HashMap<>();
@@ -167,7 +169,7 @@ public class Indexer extends EuroVocParser {
     private void IndexConcept(EuroVocConcept evc) {
         Document doc = new Document();
         doc.add(new Field("ID", evc.getId(), Field.Store.YES, Field.Index.NO));
-        doc.add(new Field("TITLE", evc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        doc.add(new Field("TITdoLE", evc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         doc.add(new Field("TEXT", evc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         String docs = "";
         for (String s : evc.getDocs()) {
@@ -185,7 +187,7 @@ public class Indexer extends EuroVocParser {
         
         doc.add(new Field("CUMDESC", Fields.get(4), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
         doc.add(new Field("CUMUNDESC", Fields.get(5), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
-        
+        doc.add(new Field("LEVEL", Fields.get(6), Field.Store.YES, Field.Index.NO));
         
         try {
             this.writer.addDocument(doc);
@@ -308,7 +310,18 @@ public class Indexer extends EuroVocParser {
                     conceptHierarchy_getParents.put(c, parents);
                     }
             }
-            log.info("Concepts hierarchy graph is loaded...");
+            log.info("Degrees in concepts hierarchy graph is loaded...");
+            
+            BufferedReader br = new BufferedReader(new FileReader(new File(configFile.getProperty("CONCEPTS_LEVEL_FILE_PATH"))));
+            String line;
+            while((line=br.readLine())!=null){
+                String[] parts =  line.split("\\s+");
+                this.conceptLevel.put(parts[0], parts[1]);
+            }
+            br.close();
+            
+            log.info("Levels in concepts hierarchy graph is loaded...");
+            
            
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             log.error(ex);
@@ -350,6 +363,12 @@ public class Indexer extends EuroVocParser {
         fields.add(cumDesc.trim());
         String cumUnDescs = this.recursiveUnDesc_Parents(docId);
         fields.add(cumUnDescs.trim());
+        
+        
+        String level = this.conceptLevel.get(docId);
+        fields.add(level.trim());
+        
+        
         return fields;
     }
     

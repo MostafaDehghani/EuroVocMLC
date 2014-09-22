@@ -10,11 +10,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.uva.lucenefacility.IndexInfo;
 import nl.uva.mlc.eurovoc.EuroVocDoc;
-import static nl.uva.mlc.eurovoc.featureextractor.RawFeatureCalculator.log;
 import nl.uva.mlc.eurovoc.irengine.Retrieval;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -26,20 +23,11 @@ import org.apache.lucene.queryparser.classic.ParseException;
 public class FeaturesDefinition {
         
     
-        /**
-     * 
-     * @param doc
-     * @param simF: 
-     *      LMD, // for LMDirichletSimilarity
-     *      LMJM, //for LMJelinekMercerSimilarity
-     *      BM25, // for Okapi-BM25Similarity
-     * @param field
-     * @return 
-     */
-    
-    private HashMap<String,Feature> parentsNum = null;
-    private HashMap<String,Feature> childrenNum = null;
-    private HashMap<String,Feature> docNum = null;
+    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(FeaturesDefinition.class.getName());
+    private HashMap<String,Feature> classParentsNum = null;
+    private HashMap<String,Feature> classChildrenNum = null;
+    private HashMap<String,Feature> classDocNum = null;
+    private HashMap<String,Feature> classLevel = null;
     private TreeMap<Integer, String> indexId_docId_map = null;
     private IndexReader ireader = null;
     private Retrieval retriver = null;
@@ -67,7 +55,7 @@ public class FeaturesDefinition {
         }
     }
         
-    public HashMap<String,Feature> F_1_2_3_retrievalBased(EuroVocDoc doc, String queryField, String docField, String simFunc, List<Float> simFuncParams) {
+    public HashMap<String,Feature> F_retrievalBased(EuroVocDoc doc, String queryField, String docField, String simFunc, List<Float> simFuncParams) {
         HashMap<String,Feature> feature_oneQ_allD =  new HashMap<String, Feature>();
         retriver = this.getRetriever();
         retriver.setIreader(this.ireader);
@@ -90,51 +78,69 @@ public class FeaturesDefinition {
         return feature_oneQ_allD;
     } 
     
-    public HashMap<String,Feature> F_4_degreeInHierarchy(EuroVocDoc doc, String pORc) {
+    public HashMap<String,Feature> F_classDegreeInHierarchy(String pORc){
         HashMap<String,Feature> feature_oneQ_allD =  new HashMap<String, Feature>();
         if(pORc.equals("p")){
-            if(this.parentsNum == null){
-                parentsNum = new HashMap<>();
+            if(this.classParentsNum == null){
+                classParentsNum = new HashMap<>();
                 IndexInfo iInfo = new IndexInfo(this.ireader);
                 for (int i = 0; i < this.ireader.numDocs(); i++) {
                         Feature f = new Feature("pNum", iInfo.getDocumentLength(i, "PARENTS").doubleValue() , this.indexId_docId_map.get(i));
-                        parentsNum.put(this.indexId_docId_map.get(i), f);
+                        classParentsNum.put(this.indexId_docId_map.get(i), f);
                 }
             }
             else{
-                feature_oneQ_allD = parentsNum;
+                feature_oneQ_allD = classParentsNum;
             }
         }
         else if(pORc.equals("c")){
-            if(this.childrenNum == null){
-                childrenNum = new HashMap<>();
+            if(this.classChildrenNum == null){
+                classChildrenNum = new HashMap<>();
                 IndexInfo iInfo = new IndexInfo(this.ireader);
                 for (int i = 0; i < this.ireader.numDocs(); i++) {
                         Feature f = new Feature("cNum", iInfo.getDocumentLength(i, "CHILDREN").doubleValue() , this.indexId_docId_map.get(i));
-                        childrenNum.put(this.indexId_docId_map.get(i), f);
+                        classChildrenNum.put(this.indexId_docId_map.get(i), f);
                 }
             }
             else{
-                feature_oneQ_allD = childrenNum;
+                feature_oneQ_allD = classChildrenNum;
             }
         }
         return feature_oneQ_allD;
     }
     
-    public HashMap<String,Feature> F_5_docNum(EuroVocDoc doc) {
-        if(this.docNum == null){
-            docNum = new HashMap<>();
+    public HashMap<String,Feature> F_classDocNum() {
+        if(this.classDocNum == null){
+            classDocNum = new HashMap<>();
             for (int i = 0; i < this.ireader.numDocs(); i++) {
                 try {
                     String[] docs = ireader.document(i).get("DOCS").split("\\s+");
                     Feature f = new Feature("docNum", (double)docs.length , this.indexId_docId_map.get(i));
-                    docNum.put(this.indexId_docId_map.get(i), f);
+                    classDocNum.put(this.indexId_docId_map.get(i), f);
                 } catch (IOException ex) {
-                    Logger.getLogger(FeaturesDefinition.class.getName()).log(Level.SEVERE, null, ex);
+                    log.error(ex);
                 }
             }
         }
-        return docNum;
-    } 
+        return classDocNum;
+    }
+    
+    public HashMap<String,Feature> F_classLevelInHierarchy()
+    {
+        if(this.classLevel == null){
+            classLevel = new HashMap<>();
+            for (int i = 0; i < this.ireader.numDocs(); i++) {
+                try {
+                    String level = ireader.document(i).get("LEVEL");
+                    Feature f = new Feature("level", Double.parseDouble(level), this.indexId_docId_map.get(i));
+                    classLevel.put(this.indexId_docId_map.get(i), f);
+                } catch (IOException ex) {
+                    log.error(ex);
+                }
+            }
+        }
+        return classLevel;
+    }    
+    
     
 }
