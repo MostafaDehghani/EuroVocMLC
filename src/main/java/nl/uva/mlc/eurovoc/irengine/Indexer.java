@@ -366,6 +366,9 @@ public class Indexer extends EuroVocParser {
         
         
         String level = this.conceptLevel.get(docId);
+        if(level==null){
+                System.out.println("ConceptID:" +  docId);
+        }
         fields.add(level.trim());
         
         
