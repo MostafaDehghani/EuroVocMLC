@@ -28,7 +28,7 @@ public class StanfordNamedEntityRecognizer {
         URL c3url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.muc.7class.distsim.crf.ser.gz");
         String classifierPath[] ={c1url.getPath(), c2url.getPath(),c3url.getPath()};
         this.Classifier = new AbstractSequenceClassifier[classifierPath.length];
-        for(int i=0; i<classifierPath.length ;i++){
+        for(int i=0; i<Classifier.length ;i++){
             Classifier[i]= CRFClassifier.getClassifierNoExceptions(classifierPath[i]);
         }
        
@@ -43,15 +43,14 @@ public class StanfordNamedEntityRecognizer {
               continue;
           }
         Matcher m = Pattern.compile("<([A-Za-z0-9]+?)>(.*?)<(/[A-Za-z0-9]+?)>").matcher(Text_NER);
+       List<String> tmpOut = new ArrayList<String>();
         while(m.find()){
-                    Output.add(m.group(2));
+            if(!Output.contains(m.group(2)))
+                    tmpOut.add(m.group(2));
         }
+        Output.addAll(tmpOut);
+        
       }
       return Output;
-    }
-    
-    public static void main(String[] args) {
-        StanfordNamedEntityRecognizer s = new StanfordNamedEntityRecognizer();
-        System.out.println(s.NER("Samira and Mostafa"));
     }
 }
