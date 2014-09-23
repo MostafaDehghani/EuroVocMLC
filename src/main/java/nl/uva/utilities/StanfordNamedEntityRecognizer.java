@@ -23,9 +23,9 @@ import java.util.regex.Pattern;
 public class StanfordNamedEntityRecognizer {
     public AbstractSequenceClassifier<CoreLabel> Classifier[];  
     public StanfordNamedEntityRecognizer() {
-        URL c1url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.all.3class.distsim.crf.ser.gz");
-        URL c2url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.conll.4class.distsim.crf.ser.gz");
-        URL c3url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.muc.7class.distsim.crf.ser.gz");
+        URL c1url  = this.getClass().getClassLoader().getResource("/stanford-ner/classifiers/english.all.3class.distsim.crf.ser.gz");
+        URL c2url  = this.getClass().getClassLoader().getResource("/stanford-ner/classifiers/english.conll.4class.distsim.crf.ser.gz");
+        URL c3url  = this.getClass().getClassLoader().getResource("/stanford-ner/classifiers/english.muc.7class.distsim.crf.ser.gz");
         String classifierPath[] ={c1url.getPath(), c2url.getPath(),c3url.getPath()};
         this.Classifier = new AbstractSequenceClassifier[classifierPath.length];
         for(int i=0; i<Classifier.length ;i++){
