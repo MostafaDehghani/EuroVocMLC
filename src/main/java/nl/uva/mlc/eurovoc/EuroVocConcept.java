@@ -17,6 +17,7 @@ public class EuroVocConcept {
     private String id;
     private String title;
     private String text;
+    private String namerEntities;
     private ArrayList<String> docs;
 
     public EuroVocConcept(String id, String text, String title, ArrayList<String> docs) {
@@ -24,6 +25,21 @@ public class EuroVocConcept {
         this.title = title;
         this.text = text;
         this.docs = docs;
+    }
+    
+    public EuroVocConcept(String id, String text, String title, ArrayList<String> docs, String namedEntities) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.docs = docs;
+        this.namerEntities = namedEntities;
+    }
+    public void setNamerEntities(String namerEntities) {
+        this.namerEntities = namerEntities;
+    }
+
+    public String getNamerEntities() {
+        return namerEntities;
     }
 
     public void setId(String id) {

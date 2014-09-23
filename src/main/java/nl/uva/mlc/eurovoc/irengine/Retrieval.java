@@ -7,11 +7,15 @@
 package nl.uva.mlc.eurovoc.irengine;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.uva.lucenefacility.IndexInfo;
 import nl.uva.lucenefacility.MyAnalyzer;
 import nl.uva.mlc.eurovoc.featureextractor.Feature;
@@ -47,7 +51,8 @@ public class Retrieval {
     private String field = null;
     private final Boolean stemming = Boolean.valueOf(configFile.getProperty("IF_STEMMING"));
     private final Boolean commonWordsRemoving = Boolean.valueOf(configFile.getProperty("IF_STOPWORD_REMOVING"));
-    private MyAnalyzer myAnalyzer = null;
+    private Analyzer analyzer = null;
+    private Map<String, Analyzer> analyzerMap = new HashMap<String, Analyzer>();
     private ArrayList<String> commonWs = null;
     private TreeMap<Integer, String> indexId_docID_Map = null;
     private List<Float> params = null;
@@ -88,16 +93,30 @@ public class Retrieval {
             BM25 // for Okapi-BM25Similarity            
         }
     
+    private void setAnalyser(){
+        analyzerMap.put("NAMEDENTITIES", new MyAnalyzer(false).MyNgramAnalyzer());
+        
+        this.analyzer = this.analyzerMap.get(this.field);
+        
+        if(this.analyzer==null){
+            try {
+                MyAnalyzer myAnalyzer;
+                if(commonWordsRemoving){
+                    myAnalyzer = new MyAnalyzer(stemming, this.getCommonWords());
+                } else {
+                    myAnalyzer = new MyAnalyzer(stemming);
+                }
+                this.analyzer = myAnalyzer.getAnalyzer(configFile.getProperty("CORPUS_LANGUAGE"));
+            } catch (FileNotFoundException ex) {
+                log.error(ex);
+            }
+        }
+    }
     private Similarity[] SIM_FUNCS;
 
     public Retrieval(){
-            if(commonWordsRemoving){
-                myAnalyzer = new MyAnalyzer(stemming, this.getCommonWords());
-            } else {
-                myAnalyzer = new MyAnalyzer(stemming);
-            }
-            
-            this.SIM_FUNCS = new Similarity[]{new LMDirichletSimilarity(Float.parseFloat(configFile.getProperty("PARAMETERS_LM_DIRICHLET_MU"))),
+        this.setAnalyser();
+        this.SIM_FUNCS = new Similarity[]{new LMDirichletSimilarity(Float.parseFloat(configFile.getProperty("PARAMETERS_LM_DIRICHLET_MU"))),
                                              new LMJelinekMercerSimilarity(Float.parseFloat(configFile.getProperty("PARAMETERS_LM_JM_LAMBDA"))),
                                              new BM25Similarity(Float.parseFloat(configFile.getProperty("PARAMETERS_BM25_K1")), 
                                                          Float.parseFloat(configFile.getProperty("PARAMETERS_BM25_b")))
@@ -106,8 +125,7 @@ public class Retrieval {
     }
 
     public HashMap<String,Feature> searchAndReturnResults(String queryText, String qId) throws IOException, ParseException {
-        Analyzer analyzer = myAnalyzer.getAnalyzer(configFile.getProperty("CORPUS_LANGUAGE"));
-        QueryParser qParser = new QueryParser(Version.LUCENE_CURRENT, field ,analyzer);
+            QueryParser qParser = new QueryParser(Version.LUCENE_CURRENT, field ,this.analyzer);
             BooleanQuery.setMaxClauseCount(queryText.split("\\s+").length);
             Query q = qParser.parse(QueryParser.escape(queryText));
             this.simFunction = SIM_FUNCS[SimilarityFunction.valueOf(SimFName).ordinal()];

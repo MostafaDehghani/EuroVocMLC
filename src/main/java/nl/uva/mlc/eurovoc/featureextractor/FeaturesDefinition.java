@@ -70,6 +70,12 @@ public class FeaturesDefinition {
             else if(queryField.equals("TITLE")){
                 feature_oneQ_allD = retriver.searchAndReturnResults(doc.getTitle(), doc.getId());
             }
+            else if(queryField.equals("NAMEDENTITIES")){
+                feature_oneQ_allD = retriver.searchAndReturnResults(doc.getNamedEntities(), doc.getId());
+            }
+            else{
+                log.error("Undifine Field: " + queryField);
+            }
         } catch (IOException ex) {
             log.error(ex);
         } catch (ParseException ex) {

@@ -3,6 +3,8 @@ package nl.uva.mlc.eurovoc.irengine;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import nl.uva.lucenefacility.MyAnalyzer;
 import nl.uva.mlc.eurovoc.EuroVocDoc;
 import nl.uva.mlc.eurovoc.EuroVocParser;
@@ -10,6 +12,7 @@ import static nl.uva.mlc.settings.Config.configFile;
 import nl.uva.utilities.StanfordNamedEntityRecognizer;
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
@@ -25,6 +28,7 @@ public class TestDataIndexer extends EuroVocParser {
 
     private final Integer minDocLength = Integer.parseInt(configFile.getProperty("MIN_DOC_LENGTH"));
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TestDataIndexer.class.getName());
+    private Map<String, Analyzer> analyzerMap = new HashMap<String, Analyzer>();
     private IndexWriter writer;
     public TestDataIndexer() {
 
@@ -33,13 +37,15 @@ public class TestDataIndexer extends EuroVocParser {
 
             preIndexerCleaning();
             
+            analyzerMap.put("NAMEDENTITIES", new MyAnalyzer(false).MyNgramAnalyzer());
             //Without Stopwords (In order to make list of common words)
             //
             //
             MyAnalyzer myAnalyzer_noStoplist = new MyAnalyzer(false);
             Analyzer analyzer = myAnalyzer_noStoplist.getAnalyzer(configFile.getProperty("CORPUS_LANGUAGE"));
-            IndexWriterConfig irc = new IndexWriterConfig(Version.LUCENE_CURRENT, analyzer);
-            this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("TEST_INDEX_PATH"))), irc);
+            PerFieldAnalyzerWrapper prfWrapper= new PerFieldAnalyzerWrapper(analyzer, analyzerMap);
+            IndexWriterConfig irc = new IndexWriterConfig(Version.LUCENE_CURRENT, prfWrapper);
+     this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("TEST_INDEX_PATH"))), irc);
             fileReader(new File(configFile.getProperty("CORPUS_Eval_PATH")));
             this.writer.commit();
             this.writer.close();
@@ -64,7 +70,8 @@ public class TestDataIndexer extends EuroVocParser {
         doc.add(new Field("TEXT", EVdoc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         String nes="";
         for (String s : StanfordNamedEntityRecognizer.NER(EVdoc.getText())) {
-            nes += s.trim() + "\n";
+            String c = s.replaceAll("\\s+", "0");
+            nes += c + " " + s.trim() + " ";
         }
         doc.add(new Field("NAMEDENTITIES", nes, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
         String Classes = "";

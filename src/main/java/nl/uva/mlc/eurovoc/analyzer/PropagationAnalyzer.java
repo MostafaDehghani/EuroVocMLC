@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.uva.mlc.eurovoc.EuroVocDoc;
-import nl.uva.mlc.eurovoc.EuroVocParser;
 import nl.uva.mlc.eurovoc.featureextractor.Feature;
 import nl.uva.mlc.eurovoc.featureextractor.FeatureNormalizer;
 import nl.uva.mlc.eurovoc.featureextractor.FeaturePropagator;
@@ -33,15 +33,14 @@ import org.apache.lucene.store.SimpleFSDirectory;
  *
  * @author Mosi
  */
-public class PropagationAnalyzer extends EuroVocParser {
+public class PropagationAnalyzer {
 
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PropagationAnalyzer.class.getName());
     private ArrayList<Integer> fNum = null;
     private ArrayList<Integer> itNums = null;
     private ArrayList<Double> alphas = null;
 
-    private String queriesPath = null;
-    private IndexReader ireader = null;
+    private IndexReader trainIreader = null;
     private FeaturesDefinition fd = null;
     private RawFeatureCalculator rfc = null;
     private FeatureNormalizer fn = null;
@@ -65,13 +64,12 @@ public class PropagationAnalyzer extends EuroVocParser {
             this.alphas.add(Double.parseDouble(s.trim()));
         }
         log.info("Alphas for analyze:" + this.alphas.toString());
-        this.queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
         try {
-            this.ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
+            this.trainIreader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
         } catch (IOException ex) {
             log.error(ex);
         }
-        this.fd = new FeaturesDefinition(ireader);
+        this.fd = new FeaturesDefinition(trainIreader);
         this.rfc = new RawFeatureCalculator();
         this.rfc.setFd(this.fd);
         this.fp = new FeaturePropagator();
@@ -80,8 +78,8 @@ public class PropagationAnalyzer extends EuroVocParser {
         //Cleaning
         File f;
         for (int fnum : this.fNum) {
-        f = new File(this.outDir
-                + "/all_folds_F-" + fnum + ".txt");
+            f = new File(this.outDir
+                    + "/all_folds_F-" + fnum + ".txt");
             if (f.exists()) {
                 f.delete();
                 log.info("Deletting the existing files on: " + f.getPath());
@@ -104,8 +102,7 @@ public class PropagationAnalyzer extends EuroVocParser {
         }
     }
 
-    @Override
-    public void doSomeAction(EuroVocDoc docAsQuery) {
+    public void Quering(EuroVocDoc docAsQuery) {
         addQueryToJudgmentFile(docAsQuery);
 
         for (int fnum : this.fNum) {
@@ -162,9 +159,27 @@ public class PropagationAnalyzer extends EuroVocParser {
         }
     }
 
+    private void testIndexDocReader() {
+        try {
+            IndexReader testIreader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("TEST_INDEX_PATH"))));
+            for (int i = 0; i < testIreader.numDocs(); i++) {
+                String id = testIreader.document(i).get("ID");
+                String title = testIreader.document(i).get("TITLE");
+                String text = testIreader.document(i).get("TEXT");
+                String namedEntities = testIreader.document(i).get("NAMEDENTITIES");
+                String[] classes = testIreader.document(i).get("CLASSES").split("\\s+");
+                EuroVocDoc doc = new EuroVocDoc(id, title, text, namedEntities, new ArrayList<String>(Arrays.asList(classes)));
+                Quering(doc);
+
+            }
+        } catch (IOException ex) {
+            log.error(ex);
+        }
+    }
+
     public void main(String outDir) {
         this.outDir = outDir;
-        this.fileReader(new File(queriesPath));
+        this.testIndexDocReader();
     }
 
 }

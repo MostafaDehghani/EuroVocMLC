@@ -18,8 +18,17 @@ public class EuroVocDoc {
     private String url;
     private String note;
     private String text;
+    private String namedEntities;
     private ArrayList<String> classes;
 
+    public EuroVocDoc(String id, String title, String text, String namedEntities, ArrayList<String> classes) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+        this.namedEntities = namedEntities;
+        this.classes = classes ;
+    }
+    
     public EuroVocDoc(String id, String n, String lang, String creationDate, String title, String url, String note, String text, ArrayList<String> classes) {
         this.id = id;
         this.n = n;
@@ -30,6 +39,51 @@ public class EuroVocDoc {
         this.note = note;
         this.text = text;
         this.classes = classes ;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setN(String n) {
+        this.n = n;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setNamedEntities(String namedEntities) {
+        this.namedEntities = namedEntities;
+    }
+
+    public void setClasses(ArrayList<String> classes) {
+        this.classes = classes;
+    }
+    
+    
+    public String getNamedEntities() {
+        return namedEntities;
     }
 
     public String getId() {

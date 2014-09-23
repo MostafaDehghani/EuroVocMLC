@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import nl.uva.mlc.eurovoc.EuroVocDoc;
-import nl.uva.mlc.eurovoc.EuroVocParser;
 import nl.uva.mlc.settings.Config;
 import static nl.uva.mlc.settings.Config.configFile;
 import org.apache.lucene.index.IndexReader;
@@ -26,7 +25,7 @@ import org.apache.lucene.store.SimpleFSDirectory;
  *
  * @author mosi
  */
-public class RawFeatureCalculator extends EuroVocParser {
+public class RawFeatureCalculator{
 
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(RawFeatureCalculator.class.getName());
     private ArrayList<Integer> featureNumbers = null;
@@ -75,8 +74,8 @@ public class RawFeatureCalculator extends EuroVocParser {
 
     
     
-    @Override
-    public void doSomeAction(EuroVocDoc docAsQuery) {
+    
+    public void Quering(EuroVocDoc docAsQuery) {
         TreeMap<Integer, HashMap<String, Feature>> allFeature_oneQ_allD = new TreeMap<Integer, HashMap<String, Feature>>();
         for (int fnum : featureNumbers) {
             allFeature_oneQ_allD.put(fnum,this.calculateFeatures(docAsQuery,fnum));
@@ -213,18 +212,33 @@ public class RawFeatureCalculator extends EuroVocParser {
                 allFeature_oneQ_allD.putAll(f);
                 break;
             case 25:
-                f = fd.F_classDegreeInHierarchy("p");
+                params= Arrays.asList(1000F);
+                f = fd.F_retrievalBased(docAsQuery, "NAMEDENTITIES", "NAMEDENTITIES", "LMD", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
             case 26:
-                f = fd.F_classDegreeInHierarchy("c");
+                params= Arrays.asList(0.2F);
+                f = fd.F_retrievalBased(docAsQuery, "NAMEDENTITIES", "NAMEDENTITIES", "LMJM", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
             case 27:
-                f = fd.F_classDocNum();
+                params= Arrays.asList(0.65F);
+                f = fd.F_retrievalBased(docAsQuery, "NAMEDENTITIES", "NAMEDENTITIES", "BM25", params);
                 allFeature_oneQ_allD.putAll(f);
                 break;
             case 28:
+                f = fd.F_classDegreeInHierarchy("p");
+                allFeature_oneQ_allD.putAll(f);
+                break;
+            case 29:
+                f = fd.F_classDegreeInHierarchy("c");
+                allFeature_oneQ_allD.putAll(f);
+                break;
+            case 30:
+                f = fd.F_classDocNum();
+                allFeature_oneQ_allD.putAll(f);
+                break;
+            case 31:
                 f = fd.F_classLevelInHierarchy();
                 allFeature_oneQ_allD.putAll(f);
                 break;
@@ -234,14 +248,32 @@ public class RawFeatureCalculator extends EuroVocParser {
         return allFeature_oneQ_allD;
         
     }
+    
+    private void testIndexDocReader() {
+        try {
+            IndexReader testIreader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("TEST_INDEX_PATH"))));
+            for (int i = 0; i < testIreader.numDocs(); i++) {
+                String id = testIreader.document(i).get("ID");
+                String title = testIreader.document(i).get("TITLE");
+                String text = testIreader.document(i).get("TEXT");
+                String namedEntities = testIreader.document(i).get("NAMEDENTITIES");
+                String[] classes = testIreader.document(i).get("CLASSES").split("\\s+");
+                EuroVocDoc doc = new EuroVocDoc(id, title, text, namedEntities, new ArrayList<String>(Arrays.asList(classes)));
+                Quering(doc);
+
+            }
+        } catch (IOException ex) {
+            log.error(ex);
+        }
+    }
+
 
     public void conceptBaseFeatureCalc() {
        
        try {
-            String queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
-            IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
-            this.fd = new FeaturesDefinition(ireader);
-            fileReader(new File(queriesPath));
+            IndexReader trainIreader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("CONCEPT_INDEX_PATH"))));
+            this.fd = new FeaturesDefinition(trainIreader);
+            this.testIndexDocReader();
         } catch (IOException ex) {
             log.error(ex);
         }
