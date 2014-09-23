@@ -247,16 +247,16 @@ public class RawFeatureCalculator extends EuroVocParser {
         }
     }
 
-    public void docBaseFeatureCalc() {
-        try {
-            String queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
-            IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("DOC_INDEX_PATH"))));
-            this.fd = new FeaturesDefinition(ireader);
-            fileReader(new File(queriesPath));
-        } catch (IOException ex) {
-            log.error(ex);
-        }
-    }
+//    public void docBaseFeatureCalc() {
+//        try {
+//            String queriesPath = configFile.getProperty("CORPUS_Eval_PATH");
+//            IndexReader ireader = IndexReader.open(new SimpleFSDirectory(new File(configFile.getProperty("DOC_INDEX_PATH"))));
+//            this.fd = new FeaturesDefinition(ireader);
+//            fileReader(new File(queriesPath));
+//        } catch (IOException ex) {
+//            log.error(ex);
+//        }
+//    }
 
     private void normalizeAndWriteToFile(EuroVocDoc docAsQuery, TreeMap<Integer, HashMap<String, Feature>> allFeature_oneQ_allD) {
         HashMap<String, TreeMap<Integer,Feature>> docs = new HashMap<>();

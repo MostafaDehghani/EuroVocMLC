@@ -17,6 +17,7 @@ import nl.uva.mlc.eurovoc.EuroVocConcept;
 import nl.uva.mlc.eurovoc.EuroVocDoc;
 import nl.uva.mlc.eurovoc.EuroVocParser;
 import static nl.uva.mlc.settings.Config.configFile;
+import nl.uva.utilities.StanfordNamedEntityRecognizer;
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
@@ -42,9 +43,9 @@ import org.xml.sax.SAXException;
  *
  * @author Mostafa Dehghani
  */
-public class Indexer extends EuroVocParser {
+public class TrainDataIndexer extends EuroVocParser {
 
-    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Indexer.class.getName());
+    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TrainDataIndexer.class.getName());
     private IndexWriter writer;
     private final Boolean stemming = Boolean.valueOf(configFile.getProperty("IF_STEMMING"));
     private final Boolean commonWordsRemoving = Boolean.valueOf(configFile.getProperty("IF_STOPWORD_REMOVING"));
@@ -56,7 +57,7 @@ public class Indexer extends EuroVocParser {
     private Map<String, ArrayList<String>> conceptUnDescs = new HashMap<>();
     private Map<String, ArrayList<String>> conceptHierarchy_getParents = new HashMap<>();
     private Map<String, ArrayList<String>> conceptHierarchy_getChild = new HashMap<>();
-    public Indexer() {
+    public TrainDataIndexer() {
 
         try {
             log.info("-----------------------INDEXING--------------------------");
@@ -65,8 +66,10 @@ public class Indexer extends EuroVocParser {
             analyzerMap.put("ID", new StandardAnalyzer(Version.LUCENE_CURRENT));
             analyzerMap.put("CLASSES", new StandardAnalyzer(Version.LUCENE_CURRENT));
             analyzerMap.put("DOCS", new StandardAnalyzer(Version.LUCENE_CURRENT));
-            
+            analyzerMap.put("NAMEDENTITIES", new MyAnalyzer(false).MyNgramAnalyzer());
             //Without Stopwords (In order to make list of common words)
+            //
+            //
             MyAnalyzer myAnalyzer_noStoplist = new MyAnalyzer(stemming);
             Analyzer analyzer_1 = myAnalyzer_noStoplist.getAnalyzer(configFile.getProperty("CORPUS_LANGUAGE"));
             PerFieldAnalyzerWrapper prfWrapper_1 = new PerFieldAnalyzerWrapper(analyzer_1, analyzerMap);
@@ -171,6 +174,15 @@ public class Indexer extends EuroVocParser {
         doc.add(new Field("ID", evc.getId(), Field.Store.YES, Field.Index.NO));
         doc.add(new Field("TITdoLE", evc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         doc.add(new Field("TEXT", evc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        
+        String nes = "";
+        for (String s : StanfordNamedEntityRecognizer.NER(evc.getText())) {
+            String c = s.replaceAll("\\s+", "0");
+            nes += c + " " + s.trim() + " ";
+        }
+        doc.add(new Field("NAMEDENTITIES", nes, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+        
+        
         String docs = "";
         for (String s : evc.getDocs()) {
             docs += s + " ";
@@ -187,6 +199,7 @@ public class Indexer extends EuroVocParser {
         
         doc.add(new Field("CUMDESC", Fields.get(4), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
         doc.add(new Field("CUMUNDESC", Fields.get(5), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+        
         doc.add(new Field("LEVEL", Fields.get(6), Field.Store.YES, Field.Index.NO));
         
         try {
@@ -366,6 +379,7 @@ public class Indexer extends EuroVocParser {
         
         
         String level = this.conceptLevel.get(docId);
+        System.out.println(level);
         fields.add(level.trim());
         
         

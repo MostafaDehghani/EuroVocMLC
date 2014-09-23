@@ -47,12 +47,6 @@ public abstract class EuroVocParser {
             Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                br.close();
-            } catch (IOException ex) {
-                Logger.getLogger(EuroVocParser.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
     }
     public void fileReader(File mainFile) {

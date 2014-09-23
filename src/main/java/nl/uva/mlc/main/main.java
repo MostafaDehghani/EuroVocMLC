@@ -13,7 +13,8 @@ import nl.uva.mlc.eurovoc.dataprocessor.FoldsConcatinator;
 import nl.uva.mlc.eurovoc.featureextractor.FeaturePropagator;
 import nl.uva.mlc.eurovoc.featureextractor.KFCPropagator;
 import nl.uva.mlc.eurovoc.featureextractor.RawFeatureCalculator;
-import nl.uva.mlc.eurovoc.irengine.Indexer;
+import nl.uva.mlc.eurovoc.irengine.TestDataIndexer;
+import nl.uva.mlc.eurovoc.irengine.TrainDataIndexer;
 import nl.uva.mlc.learning.TrecEvalInputProvider;
 
 /**
@@ -28,7 +29,7 @@ public class main {
        if(args.length <1){
            log.info("The parameter should be set: "
                    + "\n 0:data seperation"
-                   + "\n 1:Indexing"
+                   + "\n 1:Indexing (Train and Test)"
                    + "\n 2:Raw feature claculating -> param alongs with the output directery"
                    + "\n 3:Propagating  -> param alongs with the all_folds out directory"
                    + "\n 4:Kfold  generating -> param alongs with the all_folds kFoldDir and k"
@@ -45,7 +46,8 @@ public class main {
         log.info("Data Seperation is finished...");
        }
        else if(choice.equals("1")){
-            new Indexer();
+            new TrainDataIndexer();
+            new TestDataIndexer();
             log.info("Indexing is finished....");
        }
        else if(choice.equals("2")){
