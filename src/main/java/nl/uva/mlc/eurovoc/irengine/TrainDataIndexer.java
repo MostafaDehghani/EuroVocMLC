@@ -57,6 +57,8 @@ public class TrainDataIndexer extends EuroVocParser {
     private Map<String, ArrayList<String>> conceptUnDescs = new HashMap<>();
     private Map<String, ArrayList<String>> conceptHierarchy_getParents = new HashMap<>();
     private Map<String, ArrayList<String>> conceptHierarchy_getChild = new HashMap<>();
+    private StanfordNamedEntityRecognizer sner = new StanfordNamedEntityRecognizer();
+    
     public TrainDataIndexer() {
 
         try {
@@ -176,7 +178,7 @@ public class TrainDataIndexer extends EuroVocParser {
         doc.add(new Field("TEXT", evc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         
         String nes = "";
-        for (String s : StanfordNamedEntityRecognizer.NER(evc.getText())) {
+        for (String s : sner.NER(evc.getText())) {
             String c = s.replaceAll("\\s+", "0");
             nes += c + " " + s.trim() + " ";
         }

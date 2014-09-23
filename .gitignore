@@ -18,7 +18,7 @@ Config.properties
 # git has its own built in compression methods
 *.7z
 *.dmg
-*.gz
+#*.gz # for StanfordClassifiers
 *.iso
 *.jar
 *.rar

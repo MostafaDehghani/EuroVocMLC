@@ -30,6 +30,7 @@ public class TestDataIndexer extends EuroVocParser {
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TestDataIndexer.class.getName());
     private Map<String, Analyzer> analyzerMap = new HashMap<String, Analyzer>();
     private IndexWriter writer;
+    private StanfordNamedEntityRecognizer sner = new StanfordNamedEntityRecognizer();
     public TestDataIndexer() {
 
         try {
@@ -69,7 +70,7 @@ public class TestDataIndexer extends EuroVocParser {
         doc.add(new Field("TITLE", EVdoc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         doc.add(new Field("TEXT", EVdoc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         String nes="";
-        for (String s : StanfordNamedEntityRecognizer.NER(EVdoc.getText())) {
+        for (String s : sner.NER(EVdoc.getText())) {
             String c = s.replaceAll("\\s+", "0");
             nes += c + " " + s.trim() + " ";
         }
