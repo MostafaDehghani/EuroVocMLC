@@ -5,6 +5,7 @@
  */
 package nl.uva.mlc.eurovoc.analyzer;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -133,10 +134,10 @@ public class PropagationAnalyzer {
         sorted_map.putAll(oneQ_allD);
         int rank = 1;
         try {
-            PrintWriter pw = new PrintWriter(new FileWriter(fileName, true));
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
             for (Entry<String, Feature> ent : sorted_map.entrySet()) {
                 String line = docAsQ.getId() + " 0 " + ent.getKey() + " " + rank++ + " " + ent.getValue().getfValue();
-                pw.write(line + " :D\n");
+                pw.write(line + " Run\n");
             }
             pw.close();
         } catch (IOException ex) {
@@ -148,7 +149,7 @@ public class PropagationAnalyzer {
         PrintWriter pw = null;
         try {
             String jugeFileName = this.outDir + "/judg.txt";
-            pw = new PrintWriter(new FileWriter(jugeFileName, true));
+            pw = new PrintWriter(new BufferedWriter(new FileWriter(jugeFileName, true)));
             for (String classlbl : docAsQuery.getClasses()) {
                 String line = docAsQuery.getId() + " 0 " + classlbl + " 1";
                 pw.write(line + "\n");
