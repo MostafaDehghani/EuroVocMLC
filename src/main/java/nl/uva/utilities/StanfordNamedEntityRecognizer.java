@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static nl.uva.mlc.settings.Config.configFile;
 
 /**
  *
@@ -25,17 +26,19 @@ import java.util.regex.Pattern;
 public class StanfordNamedEntityRecognizer {
     public AbstractSequenceClassifier<CoreLabel> Classifier[];  
     public StanfordNamedEntityRecognizer() {
-        //URL c1url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.all.3class.distsim.crf.ser.gz");
-        //URL c2url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.conll.4class.distsim.crf.ser.gz");
-        //URL c3url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.muc.7class.distsim.crf.ser.gz");
-        //String classifierPath[] ={c1url.getFile(), c2url.getFile(),c3url.getFile()};
-        String classifierPath[] ={"/home/mdehgha1/Tools/stanford-ner/classifiers/english.all.3class.distsim.crf.ser.gz",
-                                  "/home/mdehgha1/Tools/stanford-ner/classifiers/english.conll.4class.distsim.crf.ser.gz",
-                                  "/home/mdehgha1/Tools/stanford-ner/classifiers/english.muc.7class.distsim.crf.ser.gz"};
-        
-        this.Classifier = new AbstractSequenceClassifier[classifierPath.length];
-        for(int i=0; i<Classifier.length ;i++){
-            Classifier[i]= CRFClassifier.getClassifierNoExceptions(classifierPath[i]);
+//        URL c1url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.all.3class.distsim.crf.ser.gz");
+//        URL c2url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.conll.4class.distsim.crf.ser.gz");
+//        URL c3url  = this.getClass().getClassLoader().getResource("stanford-ner/classifiers/english.muc.7class.distsim.crf.ser.gz");
+//        String classifierPath[] ={c1url.getPath(), c2url.getPath(),c3url.getPath()};
+        String classifiersPathString = configFile.getProperty("NER_CLASSIFIERS_PATHS");
+        ArrayList<String> classifierPath = new ArrayList<>();
+        for(String s: classifiersPathString.split(",")){
+            classifierPath.add(s);
+        }
+        this.Classifier = new AbstractSequenceClassifier[classifierPath.size()];
+        for(int i=0; i<classifierPath.size(); i++){
+            String path =  classifierPath.get(i);
+            Classifier[i]= CRFClassifier.getClassifierNoExceptions(path);
         }
     }
     public  List<String> NER(String Input){
@@ -54,7 +57,6 @@ public class StanfordNamedEntityRecognizer {
                     tmpOut.add(m.group(2));
         }
         Output.addAll(tmpOut);
-        
       }
       return Output;
     }

@@ -260,7 +260,7 @@ public class RawFeatureCalculator{
                 String[] classes = testIreader.document(i).get("CLASSES").split("\\s+");
                 EuroVocDoc doc = new EuroVocDoc(id, title, text, namedEntities, new ArrayList<String>(Arrays.asList(classes)));
                 Quering(doc);
-
+                log.info(i + " from " + testIreader.numDocs());
             }
         } catch (IOException ex) {
             log.error(ex);
