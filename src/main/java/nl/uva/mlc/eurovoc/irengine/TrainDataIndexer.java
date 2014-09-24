@@ -121,6 +121,8 @@ public class TrainDataIndexer extends EuroVocParser {
         Document doc = new Document();
         if(EVdoc.getText().split("\\s+").length < minDocLength)  //Filtering small documents
             return;
+        if(EVdoc.getClasses().size()<1)
+            return;
         doc.add(new Field("ID", EVdoc.getId(), Field.Store.YES, Field.Index.NO));
         doc.add(new Field("TITLE", EVdoc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         doc.add(new Field("TEXT", EVdoc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
