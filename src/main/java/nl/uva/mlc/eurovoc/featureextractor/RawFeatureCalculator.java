@@ -5,6 +5,7 @@
  */
 package nl.uva.mlc.eurovoc.featureextractor;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -304,7 +305,7 @@ public class RawFeatureCalculator{
             }
         }
         try{
-        PrintWriter pw = new PrintWriter(new FileWriter(this.outDir +"/all_folds_"+this.featureNumbers.toString() +".txt",true));
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(this.outDir +"/all_folds_"+this.featureNumbers.toString() +".txt",true)));
         for(Map.Entry<String, TreeMap<Integer,Feature>> ent: docs.entrySet()){
 
                 String lbl = (docAsQuery.getClasses().contains(ent.getKey()))? "1" : "0";

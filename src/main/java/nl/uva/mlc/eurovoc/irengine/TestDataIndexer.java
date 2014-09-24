@@ -26,7 +26,7 @@ import org.apache.lucene.util.Version;
  */
 public class TestDataIndexer extends EuroVocParser {
 
-    private final Integer minDocLength = Integer.parseInt(configFile.getProperty("MIN_DOC_LENGTH"));
+//    private final Integer minDocLength = Integer.parseInt(configFile.getProperty("MIN_DOC_LENGTH"));
     static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TestDataIndexer.class.getName());
     private Map<String, Analyzer> analyzerMap = new HashMap<String, Analyzer>();
     private IndexWriter writer;
@@ -64,8 +64,8 @@ public class TestDataIndexer extends EuroVocParser {
     @Override
     public void doSomeAction(EuroVocDoc EVdoc) {
         Document doc = new Document();
-        if(EVdoc.getText().split("\\s+").length < minDocLength)  //Filtering small documents
-            return;
+//        if(EVdoc.getText().split("\\s+").length < minDocLength)  //Filtering small documents
+//            return;
         doc.add(new Field("ID", EVdoc.getId(), Field.Store.YES, Field.Index.NO));
         doc.add(new Field("TITLE", EVdoc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         doc.add(new Field("TEXT", EVdoc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));

@@ -6,6 +6,7 @@
 package nl.uva.mlc.eurovoc.featureextractor;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -247,7 +248,7 @@ public class FeaturePropagator {
             lines.put(q, docs);
         }
         try{
-        PrintWriter pw = new PrintWriter(new FileWriter(outFileName ,true));
+        PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(outFileName ,true)));
         for(Entry<String,HashMap<String, TreeMap<Integer,Feature>>> ent: lines.entrySet()){
             for(Entry<String, TreeMap<Integer,Feature>> ent2: ent.getValue().entrySet()){
                 String lbl = "";
