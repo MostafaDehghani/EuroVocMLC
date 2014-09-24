@@ -176,7 +176,7 @@ public class TrainDataIndexer extends EuroVocParser {
     private void IndexConcept(EuroVocConcept evc) {
         Document doc = new Document();
         doc.add(new Field("ID", evc.getId(), Field.Store.YES, Field.Index.NO));
-        doc.add(new Field("TITdoLE", evc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
+        doc.add(new Field("TITLE", evc.getTitle(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         doc.add(new Field("TEXT", evc.getText(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS));
         
         String nes = "";
