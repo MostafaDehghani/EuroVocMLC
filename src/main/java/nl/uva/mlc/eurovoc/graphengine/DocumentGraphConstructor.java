@@ -60,7 +60,7 @@ public class DocumentGraphConstructor extends EuroVocParser{
     }
     
     public void graphMaker() throws IOException{
-        fileReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
+        dirFilesReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
         Map<String, Double> edgeList = new HashMap<String, Double>();
         for(Entry<String, List<String>> ent : concept2doc.entrySet())
         {

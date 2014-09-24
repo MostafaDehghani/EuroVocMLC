@@ -30,7 +30,7 @@ public class main {
            log.info("The parameter should be set: "
                    + "\n 0:data seperation"
                    + "\n 1:Train indexing"
-                   + "\n 2:est indexing"
+                   + "\n 2:Test indexing"
                    + "\n 3:Raw feature claculating -> param alongs with the output directery"
                    + "\n 4:Propagating  -> param alongs with the all_folds out directory"
                    + "\n 5:Kfold  generating -> param alongs with the all_folds kFoldDir and k"

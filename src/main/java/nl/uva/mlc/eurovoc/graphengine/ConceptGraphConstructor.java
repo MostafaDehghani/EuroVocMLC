@@ -96,7 +96,7 @@ public class ConceptGraphConstructor extends EuroVocParser{
     }
 
     public void graphMaker() throws IOException{
-        fileReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
+        dirFilesReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
         this.writeToFile();
         this.writeToFileStat();
     }

@@ -77,7 +77,7 @@ public class TrainDataIndexer extends EuroVocParser {
             PerFieldAnalyzerWrapper prfWrapper_1 = new PerFieldAnalyzerWrapper(analyzer_1, analyzerMap);
             IndexWriterConfig irc_1 = new IndexWriterConfig(Version.LUCENE_CURRENT, prfWrapper_1);
             this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("DOC_TMP_INDEX_PATH"))), irc_1);
-            fileReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
+            dirFilesReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
             this.writer.commit();
             this.writer.close();
             analyzer_1.close();
@@ -101,7 +101,7 @@ public class TrainDataIndexer extends EuroVocParser {
                 PerFieldAnalyzerWrapper prfWrapper_2 = new PerFieldAnalyzerWrapper(analyzer_2, analyzerMap);
                 IndexWriterConfig irc_2 = new IndexWriterConfig(Version.LUCENE_CURRENT, prfWrapper_2);
                 this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("DOC_INDEX_PATH"))), irc_2);
-                fileReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
+                dirFilesReader(new File(configFile.getProperty("CORPUS_CON_PATH")));
                 this.writer.commit();
                 this.writer.close();
                 analyzer_2.close();

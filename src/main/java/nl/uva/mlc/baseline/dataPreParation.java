@@ -43,7 +43,7 @@ public class dataPreParation extends EuroVocParser{
 
     public void reader()
     {
-        fileReader(new File("/Users/admin/Desktop/en-full-eurovoc-1.0/documents-test/"));
+        dirFilesReader(new File("/Users/admin/Desktop/en-full-eurovoc-1.0/documents-test/"));
     }
     public static void main(String[] args) throws IOException {
         File file = new File("prepared-data.cf");

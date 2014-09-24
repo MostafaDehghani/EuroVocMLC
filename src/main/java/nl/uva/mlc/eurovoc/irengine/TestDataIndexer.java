@@ -47,7 +47,7 @@ public class TestDataIndexer extends EuroVocParser {
             PerFieldAnalyzerWrapper prfWrapper= new PerFieldAnalyzerWrapper(analyzer, analyzerMap);
             IndexWriterConfig irc = new IndexWriterConfig(Version.LUCENE_CURRENT, prfWrapper);
      this.writer = new IndexWriter(new SimpleFSDirectory(new File(configFile.getProperty("TEST_INDEX_PATH"))), irc);
-            fileReader(new File(configFile.getProperty("CORPUS_Eval_PATH")));
+            dirFilesReader(new File(configFile.getProperty("CORPUS_Eval_PATH")));
             this.writer.commit();
             this.writer.close();
             analyzer.close();
