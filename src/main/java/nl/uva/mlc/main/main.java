@@ -48,11 +48,11 @@ public class main {
        }
        else if(choice.equals("1")){
             new TrainDataIndexer();
-            log.info("Train indexing is finished....");
+            log.info("Concept indexing is finished....");
        }
        else if(choice.equals("2")){
             new TestDataIndexer();
-            log.info("Test indexing is finished....");
+            log.info("Test/Train indexing is finished....");
        }
        else if(choice.equals("3")){
         RawFeatureCalculator rfc = new RawFeatureCalculator();
