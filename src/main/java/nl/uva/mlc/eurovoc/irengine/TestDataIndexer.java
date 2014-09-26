@@ -74,9 +74,9 @@ public class TestDataIndexer extends EuroVocParser {
         String nes="";
         for (String s : sner.NER(EVdoc.getText())) {
             String c = s.replaceAll("\\s+", "0");
-            nes += c + " " + s.trim() + " ";
+            nes += c.trim() + " ";
         }
-        doc.add(new Field("NAMEDENTITIES", nes, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+        doc.add(new Field("NAMEDENTITIES", nes.trim(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
         String Classes = "";
         for (String s : EVdoc.getClasses()) {
             Classes += s + " ";
