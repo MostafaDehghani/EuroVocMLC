@@ -15,7 +15,7 @@ import nl.uva.mlc.eurovoc.featureextractor.KFCPropagator;
 import nl.uva.mlc.eurovoc.featureextractor.RawFeatureCalculator;
 import nl.uva.mlc.eurovoc.irengine.TestDataIndexer;
 import nl.uva.mlc.eurovoc.irengine.TrainDataIndexer;
-import nl.uva.mlc.learning.TrecEvalInputProvider;
+import nl.uva.mlc.eurovoc.dataprocessor.TrecEvalInputProvider;
 
 /**
  *
@@ -36,7 +36,7 @@ public class main {
                    + "\n 5:Kfold  generating -> param alongs with the all_folds kFoldDir and k"
                    + "\n 6:Analysing -> param alongs with the output directery"
                    + "\n 7:K-Fold propagator -> param alongs with the path of directory contains folds directories"
-                   + "\n 8:TrecEval data Provider -> param alongs with textfile, scoresFile, resultFile, judgeFile"
+                   + "\n 8:TrecEval data Provider -> param alongs with testfile, scoresFile, resultFile, judgeFile"
                    + "\n 9:Folds Concatinator -> param alongs with path of dirs/files to be concatinate and output dir/file ");
            return;
        }

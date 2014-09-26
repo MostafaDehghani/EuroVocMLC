@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package nl.uva.mlc.learning;
+package nl.uva.mlc.eurovoc.dataprocessor;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -35,7 +35,7 @@ public class TrecEvalInputProvider {
                 String[] lineParts1 = testLine.split(" # ");
                 String[] lineParts2 = lineParts1[0].split("\\s+");
                 String[] lineParts3 = lineParts1[1].split("\\s+");
-                resInstance resI = new resInstance(lineParts3[0],lineParts3[1],Double.parseDouble(scoreBR.readLine()),lineParts2[0]);
+                resInstance resI = new resInstance(lineParts3[0],lineParts3[1],Double.parseDouble(scoreBR.readLine().split("\\s+")[2]),lineParts2[0]);
                 res.add(resI);
                 if(++i % 10000 == 0)
                     System.out.println(i + " " + resI.toString());
