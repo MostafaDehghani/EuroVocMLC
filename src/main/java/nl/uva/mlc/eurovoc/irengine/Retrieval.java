@@ -29,6 +29,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopFieldCollector;
 import org.apache.lucene.search.similarities.BM25Similarity;
@@ -125,6 +126,7 @@ public class Retrieval {
     }
 
     public HashMap<String,Feature> searchAndReturnResults(String queryText, String qId) throws IOException, ParseException {
+            queryText = queryText.replaceAll("AND", "and").replaceAll("OR", "or").replaceAll("NOT", "not"); // to avoid boolean operation!
             QueryParser qParser = new QueryParser(Version.LUCENE_CURRENT, field ,this.analyzer);
             BooleanQuery.setMaxClauseCount(queryText.split("\\s+").length);
             Query q = qParser.parse(QueryParser.escape(queryText));
