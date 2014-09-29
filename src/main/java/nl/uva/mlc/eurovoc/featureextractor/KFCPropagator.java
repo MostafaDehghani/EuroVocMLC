@@ -86,9 +86,13 @@ public class KFCPropagator {
                         }
                     }
       	            judg.close();
-           for(int itr : itNums)
+           for(int itr : itNums){
+               if(itr==0)
+                   continue;
               for(double alpha : this.alphas)
                  {
+                    if(alpha==0D)
+                        continue;
                     this.fp.alpha = alpha;
                     this.fp.numIteration = itr;
                     File f = new File(KFoldPath + "/fold" + (i+1) + "/anal");
@@ -121,6 +125,7 @@ public class KFCPropagator {
 		     log.info("alpha:" + alpha + "iteration:" + itr + " is finished");
 		     propRes.close();
                  }
+            }    
                 
             } catch (IOException ex) {
                 log.error(ex);

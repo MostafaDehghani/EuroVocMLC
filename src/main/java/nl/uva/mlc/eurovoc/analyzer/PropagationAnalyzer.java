@@ -114,7 +114,11 @@ public class PropagationAnalyzer {
                     + "/all_folds_F-" + fnum + ".txt";
             addQueryToResultsFile(docAsQuery, oneQ_allD_Normalized, raw_fileName);
             for (int itNum : itNums) {
+                if(itNum==0)
+                    continue;
                 for (double alpha : alphas) {
+                    if(alpha==0D)
+                        continue;
                     String fileName = this.outDir
                             + "/all_folds_F-" + fnum + "_Alpha-" + alpha
                             + "_itNum-" + itNum + ".txt";
